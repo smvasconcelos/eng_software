@@ -1,0 +1,12 @@
+{
+  "pilots": [
+    {
+      "id": "1",
+      "name": "Alvaro Degas",
+      "password": "123456",
+      "planes": "GOL 123"
+    }
+  ],
+  "planes": [],
+  "travels": []
+}
