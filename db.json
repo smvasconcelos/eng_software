@@ -1,10 +1,22 @@
 {
   "pilots": [
     {
-      "id": "1",
+      "id": "e50ab070-0413-d124-e4aa-a197aac660cb",
+      "name": "Samuel Vasconcelos",
+      "password": "123",
+      "planes": "GOL 321"
+    },
+    {
+      "id": "0d5d7731-246d-759c-278a-54e02abd9491",
       "name": "Alvaro Degas",
-      "password": "123456",
-      "planes": "GOL 123"
+      "password": "123",
+      "planes": "GOL 32132"
+    },
+    {
+      "id": "f0351ee4-3ebe-cd1d-36d4-7f8ac654ccff",
+      "name": "Samuel ",
+      "password": "123",
+      "planes": "GOL 41"
     }
   ],
   "planes": [],
