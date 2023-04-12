@@ -1,117 +1,99 @@
 import { useEffect, useState } from "react";
 import { Button, Container, Row, Table } from "react-bootstrap";
 import { MutatingDots } from "react-loader-spinner";
-import { IPilots, pilotsApi } from "api/pilots/pilots";
 import { CreateModal } from "./components/CreateModal/CreateModal.component";
-import { PlaneItem, Wrapper } from "./Pilots.styles";
+import { Wrapper } from "./Planes.styles";
 import { toast } from "react-toastify";
 import { EditModal } from "./components/EditModal/EditModal";
-import { useNavigate } from "react-router-dom";
 import { IPlanes, planesApi } from "api/planes/planes";
+import { useNavigate } from "react-router-dom";
 
-export function Pilots(): JSX.Element {
-  const [pilots, setPilots] = useState<IPilots[]>([]);
-  const [pilot, setPilot] = useState<IPilots>();
+export function Planes(): JSX.Element {
+  const [planes, setPlanes] = useState<IPlanes[]>([]);
+  const [plane, setPlane] = useState<IPlanes | undefined>();
   const [createModal, setCreateModal] = useState<boolean>(false);
   const [editModal, seteditModal] = useState<boolean>(false);
-  const [planes, setPlanes] = useState<IPlanes[]>([]);
   const navigate = useNavigate();
 
   const getData = async () => {
-    const data = await pilotsApi.getPilots();
-    setPilots(data);
+    const data = await planesApi.getPlanes();
+    setPlanes(data);
   }
 
   useEffect(() => {
     getData();
   }, []);
 
-  const addPilot = async (data: IPilots) => {
-    const response = await pilotsApi.createPilot(data);
+  const addPlane = async (data: IPlanes) => {
+    const response = await planesApi.createPlane(data);
     if (response) {
-      setPilots((old) => [...old, data]);
-      return toast.success('Piloto criado com sucesso')
+      setPlanes((old) => [...old, data]);
+      return toast.success('Avião criado com sucesso')
     }
-    toast.error('Erro ao criar piloto');
+    toast.error('Erro ao criar avião');
   }
 
-  const deletePilot = async (pilot: IPilots) => {
-    if (window.confirm(`Deseja deletar o piloto ${pilot.name}?`)) {
-      const response = await pilotsApi.deletePilot(pilot.id);
+  const deletePlane = async (plane: IPlanes) => {
+    if (window.confirm(`Deseja deletar o avião de modelo ${plane.model}?`)) {
+      const response = await planesApi.deletePlane(plane.id);
       if (response) { }
-      setPilots((old) => old.filter((item) => item.id === pilot.id ? undefined : item));
-      return toast.success('Piloto deletado com sucesso')
+      setPlanes((old) => old.filter((item) => item.id === plane.id ? undefined : item));
+      return toast.success('avião deletado com sucesso')
     }
-    toast.error('Erro ao deletar piloto');
+    toast.error('Erro ao deletar avião');
   }
 
-  const updatePilot = async (pilot: IPilots) => {
-    const response = await pilotsApi.updatePilot(pilot.id, pilot);
+  const updatePlane = async (plane: IPlanes) => {
+    const response = await planesApi.updatePlane(plane.id, plane);
     if (response) {
-      setPilots((old) => [...old.filter((item) => item.id === pilot.id ? undefined : item), pilot]);
-      return toast.success('Piloto editado com sucesso')
+      setPlanes((old) => [...old.filter((item) => item.id === plane.id ? undefined : item), plane]);
+      return toast.success('avião editado com sucesso')
     }
-    toast.error('Erro ao editar piloto');
-  }
-
-  useEffect(() => {
-    const getPlanes = async () => {
-      setPlanes(await planesApi.getPlanes());
-    }
-
-    getPlanes();
-  }, [])
-
-  const getPlane = (id:string) => {
-    const model = planes.filter((item) => item.id === id);
-    return model.length > 0 ? model[0].model : id;
+    toast.error('Erro ao editar avião');
   }
 
   return (
     <Wrapper>
-      <CreateModal visible={createModal} setVisible={setCreateModal} callback={addPilot} />
-      <EditModal pilot={pilot} visible={editModal} setVisible={seteditModal} callback={updatePilot} />
+      <CreateModal visible={createModal} setVisible={setCreateModal} callback={addPlane} />
+      <EditModal plane={plane} visible={editModal} setVisible={seteditModal} callback={updatePlane} />
       <Container fluid>
         <Row className="justify-content-md-center" md={6} style={{ gap: 10 }}>
-          <Button onClick={() => setCreateModal(true)} variant="success">Adicionar Piloto</Button>
-          <Button onClick={() => navigate("/planes")} variant="success">Navegar para aeronaves</Button>
+          <Button onClick={() => setCreateModal(true)} variant="success">Adicionar avião</Button>
+          <Button onClick={() => navigate("/pilots")} variant="success">Navegar para pilotos</Button>
         </Row>
         <br />
         <Table striped bordered hover variant="dark" cellPadding={10}>
           <thead>
             <tr>
               <th>ID</th>
-              <th>Nome</th>
-              <th>Aeronaves</th>
+              <th>Fabricante</th>
+              <th>Modelo</th>
               <th>...</th>
             </tr>
           </thead>
           <tbody>
             {
-              pilots.length > 0 ?
-                pilots.map((pilot) => {
+              planes.length > 0 ?
+                planes.map((plane) => {
                   return (
-                    <tr key={pilot.id}>
-                      <td>{pilot.id}</td>
-                      <td>{pilot.name}</td>
-                      <td>
-                        {
-                          pilot.planes.map((plane) => <PlaneItem>{getPlane(plane)}</PlaneItem>)
-                        }
-                      </td>
+                    <tr key={plane.id}>
+                      <td>{plane.id}</td>
+                      <td>{plane.manufacturer}</td>
+                      <td>{plane.model}</td>
                       <td style={{ cursor: 'pointer', display: 'flex', gap: 10 }} >
-                        <span onClick={() => deletePilot(pilot)}>Deletar</span>
+                        <span onClick={() => deletePlane(plane)}>Deletar</span>
                         <span onClick={() => {
-                          setPilot(pilot);
+                          setPlane(plane);
                           seteditModal(true);
                         }}>Editar</span>
                       </td>
                     </tr>
                   )
                 })
-                : <tr>
-                  <td>
-                    <MutatingDots
+                :
+                  <tr>
+                    <td>
+                      <MutatingDots
                       height="100"
                       width="100"
                       color="#B3CB39"
@@ -122,9 +104,9 @@ export function Pilots(): JSX.Element {
                       wrapperClass=""
                       visible={true}
                     />
-                  </td>
-                  <td>
-                    <MutatingDots
+                    </td>
+                    <td>
+                      <MutatingDots
                       height="100"
                       width="100"
                       color="#B3CB39"
@@ -135,9 +117,9 @@ export function Pilots(): JSX.Element {
                       wrapperClass=""
                       visible={true}
                     />
-                  </td>
-                  <td>
-                    <MutatingDots
+                    </td>
+                    <td>
+                      <MutatingDots
                       height="100"
                       width="100"
                       color="#B3CB39"
@@ -148,9 +130,9 @@ export function Pilots(): JSX.Element {
                       wrapperClass=""
                       visible={true}
                     />
-                  </td>
-                  <td>
-                    <MutatingDots
+                    </td>
+                    <td>
+                      <MutatingDots
                       height="100"
                       width="100"
                       color="#B3CB39"
@@ -161,9 +143,8 @@ export function Pilots(): JSX.Element {
                       wrapperClass=""
                       visible={true}
                     />
-                  </td>
-                </tr>
-
+                    </td>
+                  </tr>
             }
           </tbody>
         </Table>

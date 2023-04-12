@@ -4,6 +4,8 @@ import Modal from 'react-bootstrap/Modal';
 import { IEditModalProps } from './EditModal.types';
 import uuid from 'react-uuid';
 import { toast } from 'react-toastify';
+import { useEffect, useState } from 'react';
+import { IPlanes, planesApi } from 'api/planes/planes';
 
 export function EditModal({
   setVisible,
@@ -11,11 +13,15 @@ export function EditModal({
   visible,
   pilot
 }: IEditModalProps): JSX.Element {
+  const [planes, setPlanes] = useState<IPlanes[]>([]);
 
   const onSubmit = (e: any) => {
     e.preventDefault();
-    const inputs = e.target.querySelectorAll('input');
-    const [name, planes] = [...inputs].map((input: HTMLInputElement) => {
+    const inputs = e.target.querySelectorAll('input, select');
+    const [name, planes] = [...inputs].map((input: HTMLFormElement) => {
+      if(input.name === 'planes') {
+        return [...input.options].filter(option => option.selected).map(option => option.value);
+      }
       return input.value;
     })
 
@@ -30,6 +36,15 @@ export function EditModal({
     setVisible(false);
   }
 
+
+  useEffect(() => {
+    const getPlanes = async () => {
+      setPlanes(await planesApi.getPlanes());
+    }
+
+    getPlanes();
+  }, [])
+
   return (
     <Modal show={visible} onHide={() => setVisible(false)}>
       <Modal.Header closeButton>
@@ -41,13 +56,15 @@ export function EditModal({
             <Form.Label>Nome</Form.Label>
             <Form.Control defaultValue={pilot?.name} type="text" placeholder="Alvaro Degas" />
           </Form.Group>
-          {/* <Form.Group className="mb-3" controlId="password">
-            <Form.Label>Password</Form.Label>
-            <Form.Control defaultValue={pilot?.password} type="password" placeholder="Password" />
-          </Form.Group> */}
-          <Form.Group className="mb-3" controlId="planes">
-            <Form.Label>Aeronaves</Form.Label>
-            <Form.Control defaultValue={pilot?.planes} type="text" placeholder="GOL 123" />
+          <Form.Group className="mb-3">
+            <Form.Label>Segure shift para selecionar multiplas aeronaves</Form.Label>
+            <Form.Select defaultValue={planes.filter((plane) => pilot?.planes.includes(plane.id)).map((item) => item.id)} name='planes' multiple aria-label="Selecione as aeronaves">
+              {
+                planes.length > 0 && planes.map((plane) =>
+                  <option key={plane.id} value={plane.id}>{plane.model}</option>
+                )
+              }
+            </Form.Select>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

@@ -5,6 +5,7 @@ import { Pilots } from './pages/Pilots/Pilots.page'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import { Planes } from 'pages/Planes/Planes.page';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -12,6 +13,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <Router>
       <Routes>
         <Route path="/" element={<Pilots />} />
+        <Route path="/pilots" element={<Pilots />} />
+        <Route path="/planes" element={<Planes />} />
       </Routes>
     </Router>
   </React.StrictMode>,

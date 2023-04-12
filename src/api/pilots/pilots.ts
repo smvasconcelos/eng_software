@@ -4,7 +4,7 @@ export interface IPilots {
   id: string;
   name: string;
   password: string;
-  planes: string | string[];
+  planes:  string[];
 }
 
 export const pilotsApi = {

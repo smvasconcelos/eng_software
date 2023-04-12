@@ -4,21 +4,45 @@
       "id": "e50ab070-0413-d124-e4aa-a197aac660cb",
       "name": "Samuel Vasconcelos",
       "password": "123",
-      "planes": "GOL 321"
+      "planes": [
+        "42807e69-c3a4-0c32-3758-50b0dedf6030",
+        "f5610f68-069b-0741-09a4-82fc516004c5",
+        "2c378cff-5c17-be64-9c23-3d73502d669e"
+      ]
     },
     {
-      "id": "0d5d7731-246d-759c-278a-54e02abd9491",
+      "id": "affee668-3ed7-5e76-0a3a-013f342a0100",
       "name": "Alvaro Degas",
-      "password": "123",
-      "planes": "GOL 32132"
+      "password": "123123124124",
+      "planes": [
+        "2c378cff-5c17-be64-9c23-3d73502d669e"
+      ]
     },
     {
-      "id": "f0351ee4-3ebe-cd1d-36d4-7f8ac654ccff",
-      "name": "Samuel ",
-      "password": "123",
-      "planes": "GOL 41"
+      "id": "4da1825d-2fe4-4cc4-6178-add6e317d226",
+      "name": "Alvaro Degas 2",
+      "password": "123123124124",
+      "planes": [
+        "2c378cff-5c17-be64-9c23-3d73502d669e"
+      ]
     }
   ],
-  "planes": [],
+  "planes": [
+    {
+      "id": "42807e69-c3a4-0c32-3758-50b0dedf6030",
+      "manufacturer": "GOL",
+      "model": "GOL 47S"
+    },
+    {
+      "id": "f5610f68-069b-0741-09a4-82fc516004c5",
+      "model": "GOL 451",
+      "manufacturer": "GOL 2"
+    },
+    {
+      "id": "2c378cff-5c17-be64-9c23-3d73502d669e",
+      "model": "GOL 45Z",
+      "manufacturer": "GOL 1"
+    }
+  ],
   "travels": []
 }

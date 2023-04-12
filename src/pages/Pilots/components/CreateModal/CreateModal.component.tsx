@@ -1,10 +1,11 @@
-import { InputHTMLAttributes } from 'react';
+import { InputHTMLAttributes, useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { ICreateModalProps } from './CreateModal.types';
 import { toast } from "react-toastify";
 import uuid from 'react-uuid';
+import { IPlanes, planesApi } from 'api/planes/planes';
 
 export function CreateModal({
   setVisible,
@@ -12,15 +13,19 @@ export function CreateModal({
   visible
 }: ICreateModalProps): JSX.Element {
 
+  const [planes, setPlanes] = useState<IPlanes[]>([]);
+
   const onSubmit = (e: any) => {
     e.preventDefault();
-    const inputs = e.target.querySelectorAll('input');
-    const [name, password, planes] = [...inputs].map((input: HTMLInputElement) => {
+    const inputs = e.target.querySelectorAll('input, select');
+    const [name, password, planes] = [...inputs].map((input: HTMLFormElement) => {
+      if(input.name === 'planes') {
+        return [...input.options].filter(option => option.selected).map(option => option.value);
+      }
       return input.value;
     })
 
     if (!name || !password || !planes) return toast.warning('Preencha todos os campos para presseguir');
-
     callback({
       id: uuid(),
       name: name,
@@ -29,6 +34,14 @@ export function CreateModal({
     })
     setVisible(false);
   }
+
+  useEffect(() => {
+    const getPlanes = async () => {
+      setPlanes(await planesApi.getPlanes());
+    }
+
+    getPlanes();
+  }, [])
 
   return (
     <Modal show={visible} onHide={() => setVisible(false)}>
@@ -45,9 +58,15 @@ export function CreateModal({
             <Form.Label>Password</Form.Label>
             <Form.Control type="password" placeholder="Password" />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="planes">
-            <Form.Label>Aeronaves</Form.Label>
-            <Form.Control type="text" placeholder="GOL 123" />
+          <Form.Group className="mb-3">
+            <Form.Label>Segure shift para selecionar multiplas aeronaves</Form.Label>
+            <Form.Select name='planes' multiple aria-label="Selecione as aeronaves">
+              {
+                planes.length > 0 && planes.map((plane) =>
+                  <option key={plane.id} value={plane.id}>{plane.model}</option>
+                )
+              }
+            </Form.Select>
           </Form.Group>
         </Modal.Body>
 
