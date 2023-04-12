@@ -3,7 +3,8 @@ import { api } from "../server";
 export interface IPlanes {
   id: string;
   model: string;
-  manufacturer: string;
+  date: string;
+  registration: string;
 }
 
 export const planesApi = {

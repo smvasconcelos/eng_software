@@ -1,47 +1,42 @@
 {
   "pilots": [
     {
-      "id": "e50ab070-0413-d124-e4aa-a197aac660cb",
-      "name": "Samuel Vasconcelos",
-      "password": "123",
-      "planes": [
-        "42807e69-c3a4-0c32-3758-50b0dedf6030",
-        "f5610f68-069b-0741-09a4-82fc516004c5",
-        "2c378cff-5c17-be64-9c23-3d73502d669e"
-      ]
-    },
-    {
-      "id": "affee668-3ed7-5e76-0a3a-013f342a0100",
+      "id": "0e56219b-407a-932d-4957-ae06cda921c4",
       "name": "Alvaro Degas",
       "password": "123123124124",
       "planes": [
-        "2c378cff-5c17-be64-9c23-3d73502d669e"
+        "24d1f8d9-62f5-3e3b-511d-34887c09ef63"
       ]
     },
     {
-      "id": "4da1825d-2fe4-4cc4-6178-add6e317d226",
-      "name": "Alvaro Degas 2",
+      "id": "8c475b17-2bb8-0385-bd30-5379171e35c6",
+      "name": "Alvaro Degass",
       "password": "123123124124",
       "planes": [
-        "2c378cff-5c17-be64-9c23-3d73502d669e"
+        "24d1f8d9-62f5-3e3b-511d-34887c09ef63",
+        "de46823b-4402-80fc-f2c9-c68becd69351"
       ]
     }
   ],
   "planes": [
     {
-      "id": "42807e69-c3a4-0c32-3758-50b0dedf6030",
-      "manufacturer": "GOL",
-      "model": "GOL 47S"
+      "id": "24d1f8d9-62f5-3e3b-511d-34887c09ef63",
+      "registration": "12312412412",
+      "date": "2023-04-22",
+      "model": "95254641-1066-02be-8987-4c48f5c6ab67"
     },
     {
-      "id": "f5610f68-069b-0741-09a4-82fc516004c5",
-      "model": "GOL 451",
-      "manufacturer": "GOL 2"
-    },
+      "id": "de46823b-4402-80fc-f2c9-c68becd69351",
+      "registration": "12312412412",
+      "date": "2023-04-15",
+      "model": "346964fa-69f6-30af-4a87-9e093321abad"
+    }
+  ],
+  "models": [
     {
-      "id": "2c378cff-5c17-be64-9c23-3d73502d669e",
-      "model": "GOL 45Z",
-      "manufacturer": "GOL 1"
+      "id": "95254641-1066-02be-8987-4c48f5c6ab67",
+      "model": "GOL 47S",
+      "manufacturer": "GOL"
     }
   ],
   "travels": []

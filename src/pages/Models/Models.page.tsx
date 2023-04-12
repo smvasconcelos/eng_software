@@ -5,103 +5,84 @@ import { CreateModal } from "./components/CreateModal/CreateModal.component";
 import { Wrapper } from "./Planes.styles";
 import { toast } from "react-toastify";
 import { EditModal } from "./components/EditModal/EditModal";
-import { IPlanes, planesApi } from "api/planes/planes";
-import { useNavigate } from "react-router-dom";
 import { IModels, modelsApi } from "api/models/models";
+import { useNavigate } from "react-router-dom";
 
-export function Planes(): JSX.Element {
-  const [planes, setPlanes] = useState<IPlanes[]>([]);
+export function Models(): JSX.Element {
   const [models, setModels] = useState<IModels[]>([]);
-  const [plane, setPlane] = useState<IPlanes | undefined>();
+  const [model, setModel] = useState<IModels | undefined>();
   const [createModal, setCreateModal] = useState<boolean>(false);
   const [editModal, seteditModal] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const getData = async () => {
-    const data = await planesApi.getPlanes();
-    setPlanes(data);
+    const data = await modelsApi.getModels();
+    setModels(data);
   }
 
   useEffect(() => {
     getData();
   }, []);
 
-  const addPlane = async (data: IPlanes) => {
-    const response = await planesApi.createPlane(data);
+  const addModel = async (data: IModels) => {
+    const response = await modelsApi.createModel(data);
     if (response) {
-      setPlanes((old) => [...old, data]);
-      return toast.success('Avião criado com sucesso')
+      setModels((old) => [...old, data]);
+      return toast.success('Modelo criado com sucesso')
     }
-    toast.error('Erro ao criar avião');
+    toast.error('Erro ao criar Modelo');
   }
 
-  const deletePlane = async (plane: IPlanes) => {
-    if (window.confirm(`Deseja deletar o avião de modelo ${plane.model}?`)) {
-      const response = await planesApi.deletePlane(plane.id);
-      if (response) {
-        setPlanes((old) => old.filter((item) => item.id === plane.id ? undefined : item));
-        return toast.success('avião deletado com sucesso')
-      }
-      toast.error('Erro ao deletar avião');
+  const deleteModel = async (model: IModels) => {
+    if (window.confirm(`Deseja deletar o Modelo de modelo ${model.model}?`)) {
+      const response = await modelsApi.deleteModel(model.id);
+      if (response) { }
+      setModels((old) => old.filter((item) => item.id === model.id ? undefined : item));
+      return toast.success('Modelo deletado com sucesso')
     }
+    toast.error('Erro ao deletar Modelo');
   }
 
-  const updatePlane = async (plane: IPlanes) => {
-    const response = await planesApi.updatePlane(plane.id, plane);
+  const updateModel = async (model: IModels) => {
+    const response = await modelsApi.updateModel(model.id, model);
     if (response) {
-      setPlanes((old) => [...old.filter((item) => item.id === plane.id ? undefined : item), plane]);
-      return toast.success('avião editado com sucesso')
+      setModels((old) => [...old.filter((item) => item.id === model.id ? undefined : item), model]);
+      return toast.success('Modelo editado com sucesso')
     }
-    toast.error('Erro ao editar avião');
-  }
-
-  useEffect(() => {
-    const getModels = async () => {
-      setModels(await modelsApi.getModels());
-    }
-
-    getModels();
-  }, [])
-
-  const getModel = (id:string) => {
-    const model = models.filter((item) => item.id === id);
-    console.log({model});
-    return model.length > 0 ? model[0].model : "Modelo deletado";
+    toast.error('Erro ao editar Modelo');
   }
 
   return (
     <Wrapper>
-      <CreateModal visible={createModal} setVisible={setCreateModal} callback={addPlane} />
-      <EditModal plane={plane} visible={editModal} setVisible={seteditModal} callback={updatePlane} />
+      <CreateModal visible={createModal} setVisible={setCreateModal} callback={addModel} />
+      <EditModal model={model} visible={editModal} setVisible={seteditModal} callback={updateModel} />
       <Container fluid>
         <Row className="justify-content-md-center" md={6} style={{ gap: 10 }}>
-          <Button onClick={() => setCreateModal(true)} variant="success">Adicionar avião</Button>
+          <Button onClick={() => setCreateModal(true)} variant="success">Adicionar Modelo</Button>
         </Row>
         <br />
         <Table striped bordered hover variant="dark" cellPadding={10}>
           <thead>
             <tr>
               <th>ID</th>
-              <th>Matricula</th>
-              <th>Data</th>
+              <th>Fabricante</th>
               <th>Modelo</th>
               <th>...</th>
             </tr>
           </thead>
           <tbody>
             {
-              planes.length > 0 ?
-                planes.map((plane) => {
+              models.length > 0 ?
+                models.map((model) => {
                   return (
-                    <tr key={plane.id}>
-                      <td>{plane.id}</td>
-                      <td>{plane.registration}</td>
-                      <td>{plane.date.split('-').reverse().join('/')}</td>
-                      <td>{getModel(plane.model)}</td>
+                    <tr key={model.id}>
+                      <td>{model.id}</td>
+                      <td>{model.manufacturer}</td>
+                      <td>{model.model}</td>
                       <td style={{ cursor: 'pointer', display: 'flex', gap: 10 }} >
-                        <span onClick={() => deletePlane(plane)}>Deletar</span>
+                        <span onClick={() => deleteModel(model)}>Deletar</span>
                         <span onClick={() => {
-                          setPlane(plane);
+                          setModel(model);
                           seteditModal(true);
                         }}>Editar</span>
                       </td>

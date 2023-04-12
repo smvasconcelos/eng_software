@@ -6,6 +6,7 @@ import uuid from 'react-uuid';
 import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import { IPlanes, planesApi } from 'api/planes/planes';
+import { modelsApi } from 'api/models/models';
 
 export function EditModal({
   setVisible,
@@ -14,6 +15,7 @@ export function EditModal({
   pilot
 }: IEditModalProps): JSX.Element {
   const [planes, setPlanes] = useState<IPlanes[]>([]);
+  const [models, setModels] = useState<IModels[]>([]);
 
   const onSubmit = (e: any) => {
     e.preventDefault();
@@ -42,8 +44,19 @@ export function EditModal({
       setPlanes(await planesApi.getPlanes());
     }
 
+    const getModels = async () => {
+      setModels(await modelsApi.getModels());
+    }
+
     getPlanes();
+    getModels();
   }, [])
+
+  const getPlane = (id:string) => {
+    const model = models.filter((item) => item.id === id)
+    return model.length > 0 ? model[0].model : id;
+  }
+
 
   return (
     <Modal show={visible} onHide={() => setVisible(false)}>
@@ -61,7 +74,7 @@ export function EditModal({
             <Form.Select defaultValue={planes.filter((plane) => pilot?.planes.includes(plane.id)).map((item) => item.id)} name='planes' multiple aria-label="Selecione as aeronaves">
               {
                 planes.length > 0 && planes.map((plane) =>
-                  <option key={plane.id} value={plane.id}>{plane.model}</option>
+                  <option key={plane.id} value={plane.id}>{getPlane(plane.model)}</option>
                 )
               }
             </Form.Select>

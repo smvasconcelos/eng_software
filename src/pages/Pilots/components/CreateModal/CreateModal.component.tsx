@@ -6,6 +6,7 @@ import { ICreateModalProps } from './CreateModal.types';
 import { toast } from "react-toastify";
 import uuid from 'react-uuid';
 import { IPlanes, planesApi } from 'api/planes/planes';
+import { IModels, modelsApi } from 'api/models/models';
 
 export function CreateModal({
   setVisible,
@@ -13,6 +14,7 @@ export function CreateModal({
   visible
 }: ICreateModalProps): JSX.Element {
 
+  const [models, setModels] = useState<IModels[]>([]);
   const [planes, setPlanes] = useState<IPlanes[]>([]);
 
   const onSubmit = (e: any) => {
@@ -39,9 +41,19 @@ export function CreateModal({
     const getPlanes = async () => {
       setPlanes(await planesApi.getPlanes());
     }
+    const getModels = async () => {
+      setModels(await modelsApi.getModels());
+    }
 
     getPlanes();
+    getModels();
   }, [])
+
+  const getPlane = (id:string) => {
+    const model = models.filter((item) => item.id === id)
+    return model.length > 0 ? model[0].model : id;
+  }
+
 
   return (
     <Modal show={visible} onHide={() => setVisible(false)}>
@@ -63,7 +75,7 @@ export function CreateModal({
             <Form.Select name='planes' multiple aria-label="Selecione as aeronaves">
               {
                 planes.length > 0 && planes.map((plane) =>
-                  <option key={plane.id} value={plane.id}>{plane.model}</option>
+                  <option key={plane.id} value={plane.id}>{getPlane(plane.model)}</option>
                 )
               }
             </Form.Select>

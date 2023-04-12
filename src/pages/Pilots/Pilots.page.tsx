@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { EditModal } from "./components/EditModal/EditModal";
 import { useNavigate } from "react-router-dom";
 import { IPlanes, planesApi } from "api/planes/planes";
+import { IModels, modelsApi } from "api/models/models";
 
 export function Pilots(): JSX.Element {
   const [pilots, setPilots] = useState<IPilots[]>([]);
@@ -15,6 +16,7 @@ export function Pilots(): JSX.Element {
   const [createModal, setCreateModal] = useState<boolean>(false);
   const [editModal, seteditModal] = useState<boolean>(false);
   const [planes, setPlanes] = useState<IPlanes[]>([]);
+  const [models, setModels] = useState<IModels[]>([]);
   const navigate = useNavigate();
 
   const getData = async () => {
@@ -38,11 +40,12 @@ export function Pilots(): JSX.Element {
   const deletePilot = async (pilot: IPilots) => {
     if (window.confirm(`Deseja deletar o piloto ${pilot.name}?`)) {
       const response = await pilotsApi.deletePilot(pilot.id);
-      if (response) { }
-      setPilots((old) => old.filter((item) => item.id === pilot.id ? undefined : item));
-      return toast.success('Piloto deletado com sucesso')
+      if (response) {
+        setPilots((old) => old.filter((item) => item.id === pilot.id ? undefined : item));
+        return toast.success('Piloto deletado com sucesso')
+      }
+      toast.error('Erro ao deletar piloto');
     }
-    toast.error('Erro ao deletar piloto');
   }
 
   const updatePilot = async (pilot: IPilots) => {
@@ -58,13 +61,19 @@ export function Pilots(): JSX.Element {
     const getPlanes = async () => {
       setPlanes(await planesApi.getPlanes());
     }
+    const getModels = async () => {
+      setModels(await modelsApi.getModels());
+    }
 
     getPlanes();
+    getModels();
   }, [])
 
   const getPlane = (id:string) => {
-    const model = planes.filter((item) => item.id === id);
-    return model.length > 0 ? model[0].model : id;
+    const pln = planes.filter((item) => item.id === id);
+    if(pln.length == 0) return id;
+    const model = models.filter((item) => item.id == pln[0].model)
+    return model.length > 0 ? model[0].model : "Modelo deletado";
   }
 
   return (
@@ -74,7 +83,6 @@ export function Pilots(): JSX.Element {
       <Container fluid>
         <Row className="justify-content-md-center" md={6} style={{ gap: 10 }}>
           <Button onClick={() => setCreateModal(true)} variant="success">Adicionar Piloto</Button>
-          <Button onClick={() => navigate("/planes")} variant="success">Navegar para aeronaves</Button>
         </Row>
         <br />
         <Table striped bordered hover variant="dark" cellPadding={10}>
@@ -96,7 +104,7 @@ export function Pilots(): JSX.Element {
                       <td>{pilot.name}</td>
                       <td>
                         {
-                          pilot.planes.map((plane) => <PlaneItem>{getPlane(plane)}</PlaneItem>)
+                          pilot.planes.map((plane) => <PlaneItem key={plane}>{getPlane(plane)}</PlaneItem>)
                         }
                       </td>
                       <td style={{ cursor: 'pointer', display: 'flex', gap: 10 }} >
