@@ -22,8 +22,7 @@ export function CreateModal({
     if (!model || !manufacturer) return toast.warning('Preencha todos os campos para presseguir');
 
     callback({
-      id: uuid(),
-      model: model,
+      description: model,
       manufacturer: manufacturer,
     })
     setVisible(false);
@@ -32,7 +31,7 @@ export function CreateModal({
   return (
     <Modal show={visible} onHide={() => setVisible(false)}>
       <Modal.Header closeButton>
-        <Modal.Title>Criar Piloto</Modal.Title>
+        <Modal.Title>Criar Modelo</Modal.Title>
       </Modal.Header>
       <Form onSubmit={onSubmit}>
         <Modal.Body>

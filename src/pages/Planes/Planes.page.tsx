@@ -11,35 +11,34 @@ import { IModels, modelsApi } from "api/models/models";
 
 export function Planes(): JSX.Element {
   const [planes, setPlanes] = useState<IPlanes[]>([]);
-  const [models, setModels] = useState<IModels[]>([]);
   const [plane, setPlane] = useState<IPlanes | undefined>();
   const [createModal, setCreateModal] = useState<boolean>(false);
   const [editModal, seteditModal] = useState<boolean>(false);
-  const navigate = useNavigate();
 
   const getData = async () => {
-    const data = await planesApi.getPlanes();
-    setPlanes(data);
+    const {data, status} = await planesApi.getPlanes();
+    if(!status) return;
+    setPlanes(data || []);
   }
 
   useEffect(() => {
     getData();
   }, []);
 
-  const addPlane = async (data: IPlanes) => {
-    const response = await planesApi.createPlane(data);
-    if (response) {
-      setPlanes((old) => [...old, data]);
+  const addPlane = async (plane: IPlanes) => {
+    const { status }  = await planesApi.createPlane(plane);
+    if (status) {
+      setPlanes((old) => [...old, plane]);
       return toast.success('Avião criado com sucesso')
     }
     toast.error('Erro ao criar avião');
   }
 
   const deletePlane = async (plane: IPlanes) => {
-    if (window.confirm(`Deseja deletar o avião de modelo ${plane.model}?`)) {
-      const response = await planesApi.deletePlane(plane.id);
-      if (response) {
-        setPlanes((old) => old.filter((item) => item.id === plane.id ? undefined : item));
+    if (window.confirm(`Deseja deletar o avião de matricula ${plane.registration}?`)) {
+      const {status} = await planesApi.deletePlane(plane.registration || "");
+      if (status) {
+        setPlanes((old) => old.filter((item) => item.registration === plane.registration ? undefined : item));
         return toast.success('avião deletado com sucesso')
       }
       toast.error('Erro ao deletar avião');
@@ -47,26 +46,12 @@ export function Planes(): JSX.Element {
   }
 
   const updatePlane = async (plane: IPlanes) => {
-    const response = await planesApi.updatePlane(plane.id, plane);
-    if (response) {
-      setPlanes((old) => [...old.filter((item) => item.id === plane.id ? undefined : item), plane]);
+    const { status } = await planesApi.updatePlane(plane.registration || "", plane);
+    if (status) {
+      setPlanes((old) => [...old.filter((item) => item.registration === plane.registration ? undefined : item), plane]);
       return toast.success('avião editado com sucesso')
     }
     toast.error('Erro ao editar avião');
-  }
-
-  useEffect(() => {
-    const getModels = async () => {
-      setModels(await modelsApi.getModels());
-    }
-
-    getModels();
-  }, [])
-
-  const getModel = (id:string) => {
-    const model = models.filter((item) => item.id === id);
-    console.log({model});
-    return model.length > 0 ? model[0].model : "Modelo deletado";
   }
 
   return (
@@ -81,7 +66,6 @@ export function Planes(): JSX.Element {
         <Table striped bordered hover variant="dark" cellPadding={10}>
           <thead>
             <tr>
-              <th>ID</th>
               <th>Matricula</th>
               <th>Data</th>
               <th>Modelo</th>
@@ -93,11 +77,10 @@ export function Planes(): JSX.Element {
               planes.length > 0 ?
                 planes.map((plane) => {
                   return (
-                    <tr key={plane.id}>
-                      <td>{plane.id}</td>
+                    <tr key={plane.registration}>
                       <td>{plane.registration}</td>
-                      <td>{plane.date.split('-').reverse().join('/')}</td>
-                      <td>{getModel(plane.model)}</td>
+                      <td>{plane.manufacturingDate.split('-').reverse().join('/')}</td>
+                      <td>{plane.model.description}</td>
                       <td style={{ cursor: 'pointer', display: 'flex', gap: 10 }} >
                         <span onClick={() => deletePlane(plane)}>Deletar</span>
                         <span onClick={() => {

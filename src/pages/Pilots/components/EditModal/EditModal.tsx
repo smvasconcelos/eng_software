@@ -1,12 +1,11 @@
+import { IModels, modelsApi } from 'api/models/models';
+import { useEffect, useMemo, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { IEditModalProps } from './EditModal.types';
-import uuid from 'react-uuid';
 import { toast } from 'react-toastify';
-import { useEffect, useState } from 'react';
-import { IPlanes, planesApi } from 'api/planes/planes';
-import { modelsApi } from 'api/models/models';
+import uuid from 'react-uuid';
+import { IEditModalProps } from './EditModal.types';
 
 export function EditModal({
   setVisible,
@@ -14,7 +13,6 @@ export function EditModal({
   visible,
   pilot
 }: IEditModalProps): JSX.Element {
-  const [planes, setPlanes] = useState<IPlanes[]>([]);
   const [models, setModels] = useState<IModels[]>([]);
 
   const onSubmit = (e: any) => {
@@ -29,34 +27,24 @@ export function EditModal({
 
     if (!name || !planes) return toast.warning('Preencha todos os campos para presseguir');
 
+    const newModels =  models.filter((item) => planes.includes(item.id) ? item : null).length > 0 ? models.filter((item) => planes.includes(item.id) ? item : null) : pilot.abbleToFligh;
+
     callback({
-      id: pilot?.id || uuid(),
+      id: pilot?.id || '',
       name: name,
-      password: pilot?.password || '',
-      planes: planes
+      abbleToFligh: newModels,
     })
     setVisible(false);
   }
 
 
   useEffect(() => {
-    const getPlanes = async () => {
-      setPlanes(await planesApi.getPlanes());
-    }
-
     const getModels = async () => {
-      setModels(await modelsApi.getModels());
+      setModels((await modelsApi.getModels()).data || []);
     }
 
-    getPlanes();
     getModels();
   }, [])
-
-  const getPlane = (id:string) => {
-    const model = models.filter((item) => item.id === id)
-    return model.length > 0 ? model[0].model : id;
-  }
-
 
   return (
     <Modal show={visible} onHide={() => setVisible(false)}>
@@ -71,10 +59,10 @@ export function EditModal({
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Segure shift para selecionar multiplas aeronaves</Form.Label>
-            <Form.Select defaultValue={planes.filter((plane) => pilot?.planes.includes(plane.id)).map((item) => item.id)} name='planes' multiple aria-label="Selecione as aeronaves">
+            <Form.Select name='planes' multiple aria-label="Selecione as aeronaves">
               {
-                planes.length > 0 && planes.map((plane) =>
-                  <option key={plane.id} value={plane.id}>{getPlane(plane.model)}</option>
+                models.length > 0 && models.map((model) =>
+                  <option key={model.id} value={model.id}>{model.description}</option>
                 )
               }
             </Form.Select>

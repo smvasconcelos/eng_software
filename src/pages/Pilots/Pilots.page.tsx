@@ -15,23 +15,21 @@ export function Pilots(): JSX.Element {
   const [pilot, setPilot] = useState<IPilots>();
   const [createModal, setCreateModal] = useState<boolean>(false);
   const [editModal, seteditModal] = useState<boolean>(false);
-  const [planes, setPlanes] = useState<IPlanes[]>([]);
-  const [models, setModels] = useState<IModels[]>([]);
-  const navigate = useNavigate();
 
   const getData = async () => {
-    const data = await pilotsApi.getPilots();
-    setPilots(data);
+    const {data, status} = await pilotsApi.getPilots();
+    if(!status) return;
+    setPilots(data || []);
   }
 
   useEffect(() => {
     getData();
   }, []);
 
-  const addPilot = async (data: IPilots) => {
-    const response = await pilotsApi.createPilot(data);
-    if (response) {
-      setPilots((old) => [...old, data]);
+  const addPilot = async (pilot: IPilots) => {
+    const {status, data} = await pilotsApi.createPilot(pilot);
+    if (status) {
+      setPilots((old) => [...old, {...pilot, id: data?.id}]);
       return toast.success('Piloto criado com sucesso')
     }
     toast.error('Erro ao criar piloto');
@@ -39,8 +37,8 @@ export function Pilots(): JSX.Element {
 
   const deletePilot = async (pilot: IPilots) => {
     if (window.confirm(`Deseja deletar o piloto ${pilot.name}?`)) {
-      const response = await pilotsApi.deletePilot(pilot.id);
-      if (response) {
+      const {status} = await pilotsApi.deletePilot(pilot.id || "");
+      if (status) {
         setPilots((old) => old.filter((item) => item.id === pilot.id ? undefined : item));
         return toast.success('Piloto deletado com sucesso')
       }
@@ -49,31 +47,13 @@ export function Pilots(): JSX.Element {
   }
 
   const updatePilot = async (pilot: IPilots) => {
-    const response = await pilotsApi.updatePilot(pilot.id, pilot);
-    if (response) {
+    console.log({pilot});
+    const {status} = await pilotsApi.updatePilot(pilot.id || "", pilot);
+    if (status) {
       setPilots((old) => [...old.filter((item) => item.id === pilot.id ? undefined : item), pilot]);
       return toast.success('Piloto editado com sucesso')
     }
     toast.error('Erro ao editar piloto');
-  }
-
-  useEffect(() => {
-    const getPlanes = async () => {
-      setPlanes(await planesApi.getPlanes());
-    }
-    const getModels = async () => {
-      setModels(await modelsApi.getModels());
-    }
-
-    getPlanes();
-    getModels();
-  }, [])
-
-  const getPlane = (id:string) => {
-    const pln = planes.filter((item) => item.id === id);
-    if(pln.length == 0) return id;
-    const model = models.filter((item) => item.id == pln[0].model)
-    return model.length > 0 ? model[0].model : "Modelo deletado";
   }
 
   return (
@@ -104,7 +84,7 @@ export function Pilots(): JSX.Element {
                       <td>{pilot.name}</td>
                       <td>
                         {
-                          pilot.planes.map((plane) => <PlaneItem key={plane}>{getPlane(plane)}</PlaneItem>)
+                          pilot.abbleToFligh && pilot.abbleToFligh.map((model) => <PlaneItem key={model.id}>{model.description}</PlaneItem>)
                         }
                       </td>
                       <td style={{ cursor: 'pointer', display: 'flex', gap: 10 }} >

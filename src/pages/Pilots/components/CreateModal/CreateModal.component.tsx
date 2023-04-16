@@ -1,12 +1,11 @@
-import { InputHTMLAttributes, useEffect, useState } from 'react';
+import { IModels, modelsApi } from 'api/models/models';
+import { IPlanes, planesApi } from 'api/planes/planes';
+import { useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { ICreateModalProps } from './CreateModal.types';
 import { toast } from "react-toastify";
-import uuid from 'react-uuid';
-import { IPlanes, planesApi } from 'api/planes/planes';
-import { IModels, modelsApi } from 'api/models/models';
+import { ICreateModalProps } from './CreateModal.types';
 
 export function CreateModal({
   setVisible,
@@ -15,44 +14,34 @@ export function CreateModal({
 }: ICreateModalProps): JSX.Element {
 
   const [models, setModels] = useState<IModels[]>([]);
-  const [planes, setPlanes] = useState<IPlanes[]>([]);
 
   const onSubmit = (e: any) => {
     e.preventDefault();
     const inputs = e.target.querySelectorAll('input, select');
-    const [name, password, planes] = [...inputs].map((input: HTMLFormElement) => {
-      if(input.name === 'planes') {
+    const [name, password, modelsInput] = [...inputs].map((input: HTMLFormElement) => {
+      if(input.name === 'models') {
         return [...input.options].filter(option => option.selected).map(option => option.value);
       }
       return input.value;
     })
 
-    if (!name || !password || !planes) return toast.warning('Preencha todos os campos para presseguir');
+    if (!name || !password || !modelsInput) return toast.warning('Preencha todos os campos para presseguir');
+
     callback({
-      id: uuid(),
       name: name,
       password: password,
-      planes: planes
+      abbleToFligh:  models.filter((item) => modelsInput.includes(item.id) ? item : null)
     })
     setVisible(false);
   }
 
   useEffect(() => {
-    const getPlanes = async () => {
-      setPlanes(await planesApi.getPlanes());
-    }
     const getModels = async () => {
-      setModels(await modelsApi.getModels());
+      setModels((await modelsApi.getModels()).data || []);
     }
 
-    getPlanes();
     getModels();
   }, [])
-
-  const getPlane = (id:string) => {
-    const model = models.filter((item) => item.id === id)
-    return model.length > 0 ? model[0].model : id;
-  }
 
 
   return (
@@ -72,10 +61,10 @@ export function CreateModal({
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Segure shift para selecionar multiplas aeronaves</Form.Label>
-            <Form.Select name='planes' multiple aria-label="Selecione as aeronaves">
+            <Form.Select name='models' multiple aria-label="Selecione as aeronaves">
               {
-                planes.length > 0 && planes.map((plane) =>
-                  <option key={plane.id} value={plane.id}>{getPlane(plane.model)}</option>
+                models.length > 0 && models.map((model) =>
+                  <option key={model.id} value={model.id}>{model.description}</option>
                 )
               }
             </Form.Select>

@@ -24,18 +24,26 @@ export function EditModal({
 
     if (!model || !model || !date) return toast.warning('Preencha todos os campos para presseguir');
 
+    const newModel =  models.filter(item => item.id === model)[0] ?? (plane?.model || []);
+
     callback({
-      id: plane?.id || uuid(),
       registration: registration,
-      date: date,
-      model: model,
+      manufacturingDate: date,
+      model: newModel,
     })
-    setVisible(false);
+    // setVisible(false);
   }
 
   const getData = async () => {
-    const data = await modelsApi.getModels();
-    setModels(data);
+    const {data} = await modelsApi.getModels();
+    const newData = data?.map((item) => {
+      return {
+        description: item.description,
+        id: item.id,
+        manufacturer: item.manufacturer
+      };
+    })
+    setModels(newData || []);
   }
 
   useEffect(() => {
@@ -56,17 +64,17 @@ export function EditModal({
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Modelo da Aeronave</Form.Label>
-            <Form.Select defaultValue={plane?.model}  name='planes'>
+            <Form.Select defaultValue={plane?.model.id}  name='planes'>
               {
                 models.length > 0 && models.map((model) =>
-                  <option key={model.id} value={model.id}>{model.model}</option>
+                  <option key={model.id} value={model.id}>{model.description}</option>
                 )
               }
             </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3" controlId="date">
             <Form.Label>Data de Fabricação</Form.Label>
-            <Form.Control defaultValue={plane?.date} type="date" placeholder="09/12/1998" />
+            <Form.Control defaultValue={plane?.manufacturingDate} type="date" placeholder="09/12/1998" />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

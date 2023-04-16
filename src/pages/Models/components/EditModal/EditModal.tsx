@@ -24,7 +24,7 @@ export function EditModal({
     callback({
       id: model?.id || uuid(),
       manufacturer: manufacturer || (model?.manufacturer || '') ,
-      model: modelInput || (model?.model || ''),
+      description: modelInput || (model?.description || ''),
     })
     setVisible(false);
   }
@@ -32,13 +32,13 @@ export function EditModal({
   return (
     <Modal show={visible} onHide={() => setVisible(false)}>
       <Modal.Header closeButton>
-        <Modal.Title>Editando modelo - {model?.model}</Modal.Title>
+        <Modal.Title>Editando modelo - {model?.description}</Modal.Title>
       </Modal.Header>
       <Form onSubmit={onSubmit}>
         <Modal.Body>
           <Form.Group className="mb-3" controlId="model">
             <Form.Label>Modelo</Form.Label>
-            <Form.Control defaultValue={model?.model} type="text" placeholder="GOL 123" />
+            <Form.Control defaultValue={model?.description} type="text" placeholder="GOL 123" />
           </Form.Group>
           <Form.Group className="mb-3" controlId="manufacturer">
             <Form.Label>Fabricante</Form.Label>

@@ -9,3 +9,8 @@ export const api = axios.create({
     'Content-Type': 'application/json',
   }
 });
+
+export interface IDefaultResponse<T> {
+  data?:T | null;
+  status: boolean;
+}

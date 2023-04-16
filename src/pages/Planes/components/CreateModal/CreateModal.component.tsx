@@ -1,11 +1,10 @@
-import { InputHTMLAttributes, useEffect, useState } from 'react';
+import { IModels, modelsApi } from 'api/models/models';
+import { useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { ICreateModalProps } from './CreateModal.types';
 import { toast } from "react-toastify";
-import uuid from 'react-uuid';
-import { IModels, modelsApi } from 'api/models/models';
+import { ICreateModalProps } from './CreateModal.types';
 
 export function CreateModal({
   setVisible,
@@ -23,18 +22,30 @@ export function CreateModal({
 
     if (!model || !registration || !date) return toast.warning('Preencha todos os campos para presseguir');
 
+    console.log({
+      manufacturingDate: date,
+      registration: registration,
+      model: models.filter(item => item.id === model)[0],
+    })
+
     callback({
-      id: uuid(),
-      model: model,
-      date: date,
+      model: models.filter(item => item.id === model)[0],
+      manufacturingDate: date,
       registration: registration,
     })
-    setVisible(false);
+    // setVisible(false);
   }
 
   const getData = async () => {
-    const data = await modelsApi.getModels();
-    setModels(data);
+    const {data} = await modelsApi.getModels();
+    const newData = data?.map((item) => {
+      return {
+        description: item.description,
+        id: item.id,
+        manufacturer: item.manufacturer
+      };
+    })
+    setModels(newData || []);
   }
 
   useEffect(() => {
@@ -57,7 +68,7 @@ export function CreateModal({
             <Form.Select name='planes'>
               {
                 models.length > 0 && models.map((model) =>
-                  <option key={model.id} value={model.id}>{model.model}</option>
+                  <option key={model.id} value={model.id}>{model.description}</option>
                 )
               }
             </Form.Select>
