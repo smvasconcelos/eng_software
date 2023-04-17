@@ -31,7 +31,8 @@ export function EditModal({
       manufacturingDate: date,
       model: newModel,
     })
-    // setVisible(false);
+
+    setVisible(false);
   }
 
   const getData = async () => {
@@ -60,7 +61,7 @@ export function EditModal({
         <Modal.Body>
           <Form.Group className="mb-3" controlId="registration">
             <Form.Label>Matricula</Form.Label>
-            <Form.Control defaultValue={plane?.registration}  type="text" placeholder="GOL" />
+            <Form.Control disabled defaultValue={plane?.registration}  type="text" placeholder="GOL" />
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Modelo da Aeronave</Form.Label>

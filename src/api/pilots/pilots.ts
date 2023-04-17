@@ -5,7 +5,7 @@ export interface IPilots {
   id?: string;
   name: string;
   password?: string;
-  abbleToFligh:  IModels[];
+  abbleToFligh: IModels[];
 }
 
 export const pilotsApi = {

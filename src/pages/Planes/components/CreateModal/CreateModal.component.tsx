@@ -21,13 +21,11 @@ export function CreateModal({
     })
 
     if (!model || !registration || !date) return toast.warning('Preencha todos os campos para presseguir');
-
     console.log({
+      model: models.filter(item => item.id === model)[0],
       manufacturingDate: date,
       registration: registration,
-      model: models.filter(item => item.id === model)[0],
-    })
-
+    });
     callback({
       model: models.filter(item => item.id === model)[0],
       manufacturingDate: date,
@@ -61,7 +59,7 @@ export function CreateModal({
         <Modal.Body>
           <Form.Group className="mb-3" controlId="registration">
             <Form.Label>Matricula</Form.Label>
-            <Form.Control type="text" placeholder="GOL" />
+            <Form.Control type="text" placeholder="201720309" />
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Modelo da Aeronave</Form.Label>

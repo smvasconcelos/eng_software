@@ -59,7 +59,7 @@ export function EditModal({
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Segure shift para selecionar multiplas aeronaves</Form.Label>
-            <Form.Select name='planes' multiple aria-label="Selecione as aeronaves">
+            <Form.Select defaultValue={pilot ? pilot.abbleToFligh.map((item) => item.id || '') : []} name='planes' multiple aria-label="Selecione as aeronaves">
               {
                 models.length > 0 && models.map((model) =>
                   <option key={model.id} value={model.id}>{model.description}</option>

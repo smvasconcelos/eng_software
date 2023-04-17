@@ -36,9 +36,9 @@ export const planesApi = {
       return {data: null, status: false};
     }
   },
-  deletePlane: async (id: string): Promise<IDefaultResponse<boolean>> => {
+  deletePlane: async (registration: string): Promise<IDefaultResponse<boolean>> => {
     try{
-      const response = await api.delete(`/planes/${id}`);
+      const response = await api.delete(`/planes/${registration}`);
       const {data, status} = response;
       return {data, status: status === 200};
     }catch(e){
