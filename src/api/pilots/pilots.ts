@@ -13,7 +13,6 @@ export const pilotsApi = {
     try{
       const response = await api.get("/pilots");
       const {data, status} = response;
-      console.log(status);
       return {data, status: status === 200};
     }catch(e){
       return {data: null, status: false};

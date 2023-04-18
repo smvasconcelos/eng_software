@@ -21,17 +21,13 @@ export function CreateModal({
     })
 
     if (!model || !registration || !date) return toast.warning('Preencha todos os campos para presseguir');
-    console.log({
-      model: models.filter(item => item.id === model)[0],
-      manufacturingDate: date,
-      registration: registration,
-    });
+
     callback({
       model: models.filter(item => item.id === model)[0],
       manufacturingDate: date,
       registration: registration,
     })
-    // setVisible(false);
+    setVisible(false);
   }
 
   const getData = async () => {
