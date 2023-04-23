@@ -20,23 +20,26 @@
   ],
   "planes": [
     {
-      "id": "24d1f8d9-62f5-3e3b-511d-34887c09ef63",
+      "manufacturingDate": "2023-04-15",
       "registration": "12312412412",
-      "date": "2023-04-22",
-      "model": "95254641-1066-02be-8987-4c48f5c6ab67"
-    },
-    {
-      "id": "de46823b-4402-80fc-f2c9-c68becd69351",
-      "registration": "12312412412",
-      "date": "2023-04-15",
-      "model": "346964fa-69f6-30af-4a87-9e093321abad"
+      "id": 1
     }
   ],
   "models": [
     {
-      "id": "95254641-1066-02be-8987-4c48f5c6ab67",
-      "model": "GOL 47S",
-      "manufacturer": "GOL"
+      "description": "GOL 47S",
+      "manufacturer": "GOL 3 ",
+      "id": 1
+    },
+    {
+      "description": "GOL 451",
+      "manufacturer": "GOL 2",
+      "id": 2
+    },
+    {
+      "description": "GOL 451",
+      "manufacturer": "Boeings",
+      "id": 3
     }
   ],
   "travels": []

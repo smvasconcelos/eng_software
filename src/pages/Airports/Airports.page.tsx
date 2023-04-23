@@ -1,99 +1,93 @@
 import { useEffect, useState } from "react";
 import { Button, Container, Row, Table } from "react-bootstrap";
 import { MutatingDots } from "react-loader-spinner";
-import { IPilots, pilotsApi } from "api/pilots/pilots";
-import { CreateModal } from "./components/CreateModal/CreateModal.component";
-import { PlaneItem, Wrapper } from "./Pilots.styles";
 import { toast } from "react-toastify";
+import { PlaneItem, Wrapper } from "./Airports.styles";
+import { CreateModal } from "./components/CreateModal/CreateModal.component";
 import { EditModal } from "./components/EditModal/EditModal";
-import { useNavigate } from "react-router-dom";
-import { IPlanes, planesApi } from "api/planes/planes";
-import { IModels, modelsApi } from "api/models/models";
+import { IAirports, airportApi } from "api/airports/airports";
 
-export function Pilots(): JSX.Element {
-  const [pilots, setPilots] = useState<IPilots[]>([]);
-  const [pilot, setPilot] = useState<IPilots>();
+export function Airports(): JSX.Element {
+  const [airports, setAirports] = useState<IAirports[]>([]);
+  const [airport, setAirport] = useState<IAirports>();
   const [createModal, setCreateModal] = useState<boolean>(false);
   const [editModal, seteditModal] = useState<boolean>(false);
 
   const getData = async () => {
-    const {data, status} = await pilotsApi.getPilots();
+    const {data, status} = await airportApi.getAirports();
     if(!status) return;
-    setPilots(data || []);
+    setAirports(data || []);
   }
 
   useEffect(() => {
     getData();
   }, []);
 
-  const addPilot = async (pilot: IPilots) => {
-    const {status, data} = await pilotsApi.createPilot(pilot);
+  const addAirports = async (airport: IAirports) => {
+    const {status, data} = await airportApi.createAirport(airport);
     if (status) {
-      setPilots((old) => [...old, {...pilot, id: data?.id}]);
-      return toast.success('Piloto criado com sucesso')
+      setAirports((old) => [...old, {...airport, id: data?.id}]);
+      return toast.success('Aeroporto criado com sucesso')
     }
-    toast.error('Erro ao criar piloto');
+    toast.error('Erro ao criar Aeroporto');
   }
 
-  const deletePilot = async (pilot: IPilots) => {
-    if (window.confirm(`Deseja deletar o piloto ${pilot.name}?`)) {
-      const {status} = await pilotsApi.deletePilot(pilot.id || "");
+  const deleteAirport = async (airport: IAirports) => {
+    if (window.confirm(`Deseja deletar o Aeroporto ${airport.name}?`)) {
+      const {status} = await airportApi.deleteAirport(airport.id || "");
       if (status) {
-        setPilots((old) => old.filter((item) => item.id === pilot.id ? undefined : item));
-        return toast.success('Piloto deletado com sucesso')
+        setAirports((old) => old.filter((item) => item.id === airport.id ? undefined : item));
+        return toast.success('Aeroporto deletado com sucesso')
       }
-      toast.error('Erro ao deletar piloto');
+      toast.error('Erro ao deletar Aeroporto');
     }
   }
 
-  const updatePilot = async (pilot: IPilots) => {
-    console.log({pilot});
-    const {status} = await pilotsApi.updatePilot(pilot.id || "", pilot);
+  const updateAirport = async (airport: IAirports) => {
+    console.log({airport});
+    const {status} = await airportApi.updateAirport(airport.id || "", airport);
     if (status) {
-      setPilots((old) => [...old.filter((item) => item.id === pilot.id ? undefined : item), pilot]);
-      return toast.success('Piloto editado com sucesso')
+      setAirports((old) => [...old.filter((item) => item.id === airport.id ? undefined : item), airport]);
+      return toast.success('Aeroporto editado com sucesso')
     }
-    toast.error('Erro ao editar piloto');
+    toast.error('Erro ao editar Aeroporto');
   }
 
   return (
     <Wrapper>
-      <CreateModal visible={createModal} setVisible={setCreateModal} callback={addPilot} />
-      <EditModal pilot={pilot || {
-        name: "",
-        abbleToFligh: []
-      }} visible={editModal} setVisible={seteditModal} callback={updatePilot} />
+      <CreateModal visible={createModal} setVisible={setCreateModal} callback={addAirports} />
+      <EditModal airport={airport || {
+        height: 100,
+        name: "asd",
+        locations: [0, 1]
+      }} visible={editModal} setVisible={seteditModal} callback={updateAirport} />
       <Container fluid>
         <Row className="justify-content-md-center" md={6} style={{ gap: 10 }}>
-          <Button onClick={() => setCreateModal(true)} variant="success">Adicionar Piloto</Button>
+          <Button onClick={() => setCreateModal(true)} variant="success">Adicionar Aeroporto</Button>
         </Row>
         <br />
         <Table striped bordered hover variant="dark" cellPadding={10}>
           <thead>
             <tr>
               <th>ID</th>
-              <th>Nome</th>
-              <th>Aeronaves</th>
+              <th>ICAO</th>
+              <th>Name</th>
               <th>...</th>
             </tr>
           </thead>
           <tbody>
             {
-              pilots.length > 0 ?
-                pilots.map((pilot) => {
+              airports.length > 0 ?
+                airports.map((airport) => {
                   return (
-                    <tr key={pilot.id}>
-                      <td>{pilot.id}</td>
-                      <td>{pilot.name}</td>
-                      <td>
-                        {
-                          pilot.abbleToFligh && pilot.abbleToFligh.map((model) => <PlaneItem key={model.id}>{model.description}</PlaneItem>)
-                        }
-                      </td>
+                    <tr key={airport.id}>
+                      <td>{airport.id}</td>
+                      <td>{airport.icao}</td>
+                      <td>{airport.name}</td>
                       <td style={{ cursor: 'pointer', display: 'flex', gap: 10 }} >
-                        <span onClick={() => deletePilot(pilot)}>Deletar</span>
+                        <span onClick={() => deleteAirport(airport)}>Deletar</span>
                         <span onClick={() => {
-                          setPilot(pilot);
+                          setAirport(airport);
                           seteditModal(true);
                         }}>Editar</span>
                       </td>

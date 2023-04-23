@@ -36,7 +36,7 @@ export function CreateModal({
       return {
         description: item.description,
         id: item.id,
-        manufacturer: item.manufacturer
+        manufacturer: item.manufacturer,
       };
     })
     setModels(newData || []);
