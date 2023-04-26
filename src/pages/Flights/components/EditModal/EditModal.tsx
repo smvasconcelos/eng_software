@@ -9,7 +9,7 @@ export function EditModal({
   setVisible,
   callback,
   visible,
-  airport
+  flights
 }: IEditModalProps): JSX.Element {
   const onSubmit = (e: any) => {
     e.preventDefault();
@@ -20,35 +20,30 @@ export function EditModal({
 
     if (!name || !locations || !height || !icao) return toast.warning('Preencha todos os campos para presseguir');
 
-    callback({
-      name: airport.name || name,
-      icao: icao || airport.icao,
-      altitude: height || airport.altitude,
-      location: locations.split(',') || airport.location,
-    })
+    // callback({
+    //   name: flights.name || name,
+    //   icao: icao || flights.icao,
+    //   altitude: height || flights.altitude,
+    //   location: locations.split(',') || flights.location,
+    // })
     setVisible(false);
   }
-
-  const locations = useMemo(() => {
-    console.log({airport})
-    return airport.location.join(',').toString() || "";
-  }, [airport])
 
 
   return (
     <Modal show={visible} onHide={() => setVisible(false)}>
       <Modal.Header closeButton>
-        <Modal.Title>Editando aeroporto - {airport?.name}</Modal.Title>
+        <Modal.Title>Editando aeroporto - {flights.source.name}</Modal.Title>
       </Modal.Header>
       <Form onSubmit={onSubmit}>
         <Modal.Body>
-          <Form.Group className="mb-3" controlId="name">
+          {/* <Form.Group className="mb-3" controlId="name">
             <Form.Label>Nome</Form.Label>
-            <Form.Control disabled defaultValue={airport.name} type="text" placeholder="Congonhas Airport" />
+            <Form.Control disabled defaultValue={flights.name} type="text" placeholder="Congonhas flights" />
           </Form.Group>
           <Form.Group  className="mb-3" controlId="icao">
             <Form.Label>ICAO</Form.Label>
-            <Form.Control disabled defaultValue={airport.icao} type="text" placeholder="text" />
+            <Form.Control disabled defaultValue={flights.icao} type="text" placeholder="text" />
           </Form.Group>
           <Form.Group className="mb-3" controlId="locations">
             <Form.Label>Localização</Form.Label>
@@ -56,8 +51,8 @@ export function EditModal({
           </Form.Group>
           <Form.Group className="mb-3" controlId="height">
             <Form.Label>Altitude</Form.Label>
-            <Form.Control defaultValue={airport.altitude}  type="text" placeholder="100.20" />
-          </Form.Group>
+            <Form.Control defaultValue={flights.altitude}  type="text" placeholder="100.20" />
+          </Form.Group> */}
         </Modal.Body>
 
         <Modal.Footer>

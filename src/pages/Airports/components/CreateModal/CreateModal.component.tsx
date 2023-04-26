@@ -25,8 +25,8 @@ export function CreateModal({
     callback({
       name: name,
       icao: icao,
-      height: height,
-      locations: locations.split(','),
+      altitude: height,
+      location: locations.split(','),
     })
     setVisible(false);
   }
@@ -46,7 +46,7 @@ export function CreateModal({
             <Form.Label>ICAO</Form.Label>
             <Form.Control type="text" placeholder="text" />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="location">
+          <Form.Group className="mb-3" controlId="locations">
             <Form.Label>Localização</Form.Label>
             <Form.Control type="text" placeholder="13,13" />
           </Form.Group>

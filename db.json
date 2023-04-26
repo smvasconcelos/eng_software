@@ -1,26 +1,15 @@
 {
   "pilots": [
     {
-      "id": "0e56219b-407a-932d-4957-ae06cda921c4",
       "name": "Alvaro Degas",
       "password": "123123124124",
-      "planes": [
-        "24d1f8d9-62f5-3e3b-511d-34887c09ef63"
-      ]
-    },
-    {
-      "id": "8c475b17-2bb8-0385-bd30-5379171e35c6",
-      "name": "Alvaro Degass",
-      "password": "123123124124",
-      "planes": [
-        "24d1f8d9-62f5-3e3b-511d-34887c09ef63",
-        "de46823b-4402-80fc-f2c9-c68becd69351"
-      ]
+      "abbleToFligh": [],
+      "id": 1
     }
   ],
   "planes": [
     {
-      "manufacturingDate": "2023-04-15",
+      "manufacturingDate": "2023-04-13",
       "registration": "12312412412",
       "id": 1
     }
@@ -35,12 +24,21 @@
       "description": "GOL 451",
       "manufacturer": "GOL 2",
       "id": 2
-    },
-    {
-      "description": "GOL 451",
-      "manufacturer": "Boeings",
-      "id": 3
     }
   ],
+  "airports": [
+    {
+      "name": "Alvaro Degas",
+      "icao": "asdasdasd",
+      "height": "12312",
+      "locations": [
+        "12",
+        "212"
+      ],
+      "id": 1
+    }
+  ],
+  "flights": [],
+  "booking": [],
   "travels": []
 }

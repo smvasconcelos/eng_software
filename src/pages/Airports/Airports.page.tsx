@@ -26,7 +26,7 @@ export function Airports(): JSX.Element {
   const addAirports = async (airport: IAirports) => {
     const {status, data} = await airportApi.createAirport(airport);
     if (status) {
-      setAirports((old) => [...old, {...airport, id: data?.id}]);
+      setAirports((old) => [...old, {...airport, id: airport.icao}]);
       return toast.success('Aeroporto criado com sucesso')
     }
     toast.error('Erro ao criar Aeroporto');
@@ -34,20 +34,19 @@ export function Airports(): JSX.Element {
 
   const deleteAirport = async (airport: IAirports) => {
     if (window.confirm(`Deseja deletar o Aeroporto ${airport.name}?`)) {
-      const {status} = await airportApi.deleteAirport(airport.id || "");
+      const {status} = await airportApi.deleteAirport(airport.icao || "");
       if (status) {
-        setAirports((old) => old.filter((item) => item.id === airport.id ? undefined : item));
+        setAirports((old) => old.filter((item) => item.icao === airport.icao ? undefined : item));
         return toast.success('Aeroporto deletado com sucesso')
       }
-      toast.error('Erro ao deletar Aeroporto');
+      toast.error('Existe um voo vinculado ao aeroporto');
     }
   }
 
   const updateAirport = async (airport: IAirports) => {
-    console.log({airport});
-    const {status} = await airportApi.updateAirport(airport.id || "", airport);
+    const {status} = await airportApi.updateAirport(airport.icao || "", airport);
     if (status) {
-      setAirports((old) => [...old.filter((item) => item.id === airport.id ? undefined : item), airport]);
+      setAirports((old) => [...old.filter((item) => item.icao === airport.icao ? undefined : item), airport]);
       return toast.success('Aeroporto editado com sucesso')
     }
     toast.error('Erro ao editar Aeroporto');
@@ -56,10 +55,10 @@ export function Airports(): JSX.Element {
   return (
     <Wrapper>
       <CreateModal visible={createModal} setVisible={setCreateModal} callback={addAirports} />
-      <EditModal airport={airport || {
-        height: 100,
+      <EditModal airport={airport ?? {
+        altitude: 100,
         name: "asd",
-        locations: [0, 1]
+        location: [0, 1]
       }} visible={editModal} setVisible={seteditModal} callback={updateAirport} />
       <Container fluid>
         <Row className="justify-content-md-center" md={6} style={{ gap: 10 }}>
@@ -69,9 +68,10 @@ export function Airports(): JSX.Element {
         <Table striped bordered hover variant="dark" cellPadding={10}>
           <thead>
             <tr>
-              <th>ID</th>
               <th>ICAO</th>
               <th>Name</th>
+              <th>Altitude</th>
+              <th>Localização</th>
               <th>...</th>
             </tr>
           </thead>
@@ -80,10 +80,11 @@ export function Airports(): JSX.Element {
               airports.length > 0 ?
                 airports.map((airport) => {
                   return (
-                    <tr key={airport.id}>
-                      <td>{airport.id}</td>
+                    <tr key={airport.icao}>
                       <td>{airport.icao}</td>
                       <td>{airport.name}</td>
+                      <td>{airport.altitude}</td>
+                      <td>{airport.location}</td>
                       <td style={{ cursor: 'pointer', display: 'flex', gap: 10 }} >
                         <span onClick={() => deleteAirport(airport)}>Deletar</span>
                         <span onClick={() => {

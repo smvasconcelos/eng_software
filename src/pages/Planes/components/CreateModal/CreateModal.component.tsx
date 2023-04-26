@@ -20,6 +20,7 @@ export function CreateModal({
       return input.value;
     })
 
+    console.log([registration, model, date]);
     if (!model || !registration || !date) return toast.warning('Preencha todos os campos para presseguir');
 
     callback({
@@ -57,9 +58,9 @@ export function CreateModal({
             <Form.Label>Matricula</Form.Label>
             <Form.Control type="text" placeholder="201720309" />
           </Form.Group>
-          <Form.Group className="mb-3">
+          <Form.Group className="mb-3" controlId="model">
             <Form.Label>Modelo da Aeronave</Form.Label>
-            <Form.Select name='planes'>
+            <Form.Select name='model'>
               {
                 models.length > 0 && models.map((model) =>
                   <option key={model.id} value={model.id}>{model.description}</option>

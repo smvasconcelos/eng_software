@@ -3,8 +3,8 @@ import { IDefaultResponse, api } from "../server";
 export interface IAirports {
   icao?: string;
   name: string;
-  locations: number[];
-  height: number;
+  location: number[];
+  altitude: number;
   id?: string;
 }
 
