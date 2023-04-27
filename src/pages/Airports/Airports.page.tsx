@@ -26,7 +26,7 @@ export function Airports(): JSX.Element {
   const addAirports = async (airport: IAirports) => {
     const {status, data} = await airportApi.createAirport(airport);
     if (status) {
-      setAirports((old) => [...old, {...airport, id: airport.icao}]);
+      setAirports((old) => Array.isArray(old) ? [ ...old, {...airport, id: airport.icao}] : [{...airport, id: airport.icao}]);
       return toast.success('Aeroporto criado com sucesso')
     }
     toast.error('Erro ao criar Aeroporto');

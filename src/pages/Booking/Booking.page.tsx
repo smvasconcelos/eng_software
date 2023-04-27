@@ -34,7 +34,7 @@ export function Booking(): JSX.Element {
   const addBooking = async (booking: IBooking) => {
     const {status, data} = await bookingApi.createBooking(booking);
     if (status) {
-      setBookings((old) => [...old, {...booking, id: data?.id || ""}]);
+      setBookings((old) => Array.isArray(old) ? [ ...old, {...booking, id: booking.id}] : [{...booking, id: booking.id}]);
       return toast.success('Voo criado com sucesso')
     }
     toast.error('Erro ao criar Voo');
@@ -255,6 +255,32 @@ export function Booking(): JSX.Element {
                       ariaLabel="mutating-dots-loading"
                       wrapperStyle={{ margin: '0 auto' }}
                       wrapperClass=""
+                    />
+                  </td>
+                  <td>
+                    <MutatingDots
+                      height="100"
+                      width="100"
+                      color="#B3CB39"
+                      secondaryColor='#6D771F'
+                      radius='12.5'
+                      ariaLabel="mutating-dots-loading"
+                      wrapperStyle={{ margin: '0 auto' }}
+                      wrapperClass=""
+                      visible={true}
+                    />
+                  </td>
+                  <td>
+                    <MutatingDots
+                      height="100"
+                      width="100"
+                      color="#B3CB39"
+                      secondaryColor='#6D771F'
+                      radius='12.5'
+                      ariaLabel="mutating-dots-loading"
+                      wrapperStyle={{ margin: '0 auto' }}
+                      wrapperClass=""
+                      visible={true}
                     />
                   </td>
                   <td>

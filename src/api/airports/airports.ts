@@ -42,6 +42,7 @@ export const airportApi = {
       const {data, status} = response;
       return {data, status: status === 200};
     }catch(e){
+      console.log(e);
       return {data: null, status: false};
     }
   },

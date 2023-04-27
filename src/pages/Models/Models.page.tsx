@@ -26,7 +26,7 @@ export function Models(): JSX.Element {
   const addModel = async (data: IModels) => {
     const {status, data: model} = await modelsApi.createModel(data);
     if (status) {
-      setModels((old) => [...old, {...data, id: model?.id}]);
+      setModels((old) => Array.isArray(old) ? [ ...old, {...data, id: model?.id}] : [{...data, id: model?.id}]);
       return toast.success('Modelo criado com sucesso')
     }
     toast.error('Erro ao criar Modelo');

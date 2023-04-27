@@ -49,6 +49,7 @@ export function EditModal({
 
   useEffect(() => {
     getData();
+    console.log(plane?.manufacturingDate)
   }, []);
 
 
@@ -75,7 +76,7 @@ export function EditModal({
           </Form.Group>
           <Form.Group className="mb-3" controlId="date">
             <Form.Label>Data de Fabricação</Form.Label>
-            <Form.Control defaultValue={plane?.manufacturingDate} type="date" placeholder="09/12/1998" />
+            <Form.Control defaultValue={plane?.manufacturingDate.replace(".00Z", "")} type="date" placeholder="09/12/1998" />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

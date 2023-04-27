@@ -30,8 +30,9 @@ export function Flights(): JSX.Element {
   const addFlights = async (flight: IFlights) => {
     const {status, data} = await flightsApi.createFlights(flight);
     if (status) {
-      setFlights((old) => [...old, {...flight, id: flight.flightNumber}]);
+      setFlights((old) => Array.isArray(old) ? [ ...old, {...flight, id: flight.flightNumber}] : [{...flight, id: flight.flightNumber}]);
       return toast.success('Voo criado com sucesso')
+
     }
     toast.error('Erro ao criar Voo');
   }
@@ -154,9 +155,7 @@ export function Flights(): JSX.Element {
                       <td>{flight.source.icao}</td>
                       <td>
                         {
-                          flight.times && flight.times.map((flight) => <PlaneItem key={flight}>{
-                            new Date(Date.apply(flight)).toLocaleDateString() +  " " + new Date(Date.apply(flight)).toLocaleTimeString()
-                          }</PlaneItem>)
+                          flight.times && flight.times.map((flight) => <PlaneItem key={flight}>{flight}</PlaneItem>)
                         }
                       </td>
                       <td>
@@ -175,6 +174,45 @@ export function Flights(): JSX.Element {
                   )
                 })
                 : <tr>
+                  <td>
+                    <MutatingDots
+                      height="100"
+                      width="100"
+                      color="#B3CB39"
+                      secondaryColor='#6D771F'
+                      radius='12.5'
+                      ariaLabel="mutating-dots-loading"
+                      wrapperStyle={{ margin: '0 auto' }}
+                      wrapperClass=""
+                      visible={true}
+                    />
+                  </td>
+                  <td>
+                    <MutatingDots
+                      height="100"
+                      width="100"
+                      color="#B3CB39"
+                      secondaryColor='#6D771F'
+                      radius='12.5'
+                      ariaLabel="mutating-dots-loading"
+                      wrapperStyle={{ margin: '0 auto' }}
+                      wrapperClass=""
+                      visible={true}
+                    />
+                  </td>
+                  <td>
+                    <MutatingDots
+                      height="100"
+                      width="100"
+                      color="#B3CB39"
+                      secondaryColor='#6D771F'
+                      radius='12.5'
+                      ariaLabel="mutating-dots-loading"
+                      wrapperStyle={{ margin: '0 auto' }}
+                      wrapperClass=""
+                      visible={true}
+                    />
+                  </td>
                   <td>
                     <MutatingDots
                       height="100"

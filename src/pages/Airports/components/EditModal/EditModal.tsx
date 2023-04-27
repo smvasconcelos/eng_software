@@ -30,7 +30,6 @@ export function EditModal({
   }
 
   const locations = useMemo(() => {
-    console.log({airport})
     return airport.location.join(',').toString() || "";
   }, [airport])
 
