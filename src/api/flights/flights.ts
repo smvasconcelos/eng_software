@@ -36,7 +36,7 @@ export const flightsApi = {
       return {data: null, status: false};
     }
   },
-  updateFlights: async (id: string, Flights: IFlights): Promise<IDefaultResponse<boolean>> => {
+  updateFlights: async (id: number, Flights: IFlights): Promise<IDefaultResponse<boolean>> => {
     try{
       const response = await api.put(`/flights/${id}`, Flights);
       const {data, status} = response;
@@ -45,7 +45,7 @@ export const flightsApi = {
       return {data: null, status: false};
     }
   },
-  deleteFlights: async (id: string): Promise<IDefaultResponse<boolean>> => {
+  deleteFlights: async (id: number): Promise<IDefaultResponse<boolean>> => {
     try{
       const response = await api.delete(`/flights/${id}`);
       const {data, status} = response;

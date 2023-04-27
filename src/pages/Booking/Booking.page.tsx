@@ -4,53 +4,53 @@ import { MutatingDots } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import { CreateModal } from "./components/CreateModal/CreateModal.component";
 import { EditModal } from "./components/EditModal/EditModal";
-import { IFlights, flightsApi } from "api/flights/flights";
-import { PlaneItem, Wrapper } from "./Flights.styles";
+import { PlaneItem, Wrapper } from "./Booking.styles";
 import { IPlanes, planesApi } from "api/planes/planes";
 import { IAirports, airportApi } from "api/airports/airports";
+import { IBooking, bookingApi } from "api/booking/booking";
 
-export function Flights(): JSX.Element {
-  const [flights, setFlights] = useState<IFlights[]>([]);
-  const [flight, setFlight] = useState<IFlights>();
+export function Booking(): JSX.Element {
+  const [bookings, setBookings] = useState<IBooking[]>([]);
+  const [booking, setBooking] = useState<IBooking>();
   const [createModal, setCreateModal] = useState<boolean>(false);
   const [editModal, seteditModal] = useState<boolean>(false);
   const [planes, setPlanes] = useState<IPlanes[]>([]);
   const [airports, setAirports] = useState<IAirports[]>([]);
 
   const getData = async () => {
-    const {data, status} = await flightsApi.getflights();
+    const {data, status} = await bookingApi.getBookings();
     if(!status) return;
-    setFlights(data || []);
+    setBookings(data || []);
   }
 
   useEffect(() => {
     getData();
   }, []);
 
-  const addFlights = async (flight: IFlights) => {
-    const {status, data} = await flightsApi.createFlights(flight);
+  const addBooking = async (booking: IBooking) => {
+    const {status, data} = await bookingApi.createBooking(booking);
     if (status) {
-      setFlights((old) => [...old, {...flight, id: flight.flightNumber}]);
+      setBookings((old) => [...old, {...booking, id: data?.id || ""}]);
       return toast.success('Voo criado com sucesso')
     }
     toast.error('Erro ao criar Voo');
   }
 
-  const deleteFlights = async (flight: IFlights) => {
-    if (window.confirm(`Deseja deletar o Voo ${flight.flightNumber}?`)) {
-      const {status} = await flightsApi.deleteFlights(flight.flightNumber || 0);
+  const deleteFlights = async (bookings: IBooking) => {
+    if (window.confirm(`Deseja deletar o Voo ${bookings.id}?`)) {
+      const {status} = await bookingApi.deleteBooking(bookings.id || "");
       if (status) {
-        setFlights((old) => old.filter((item) => item.flightNumber === flight.flightNumber ? undefined : item));
+        setBookings((old) => old.filter((item) => item.id === bookings.id ? undefined : item));
         return toast.success('Voo deletado com sucesso')
       }
       toast.error('Erro ao excluir voo');
     }
   }
 
-  const updateFlights = async (flight: IFlights) => {
-    const {status} = await flightsApi.updateFlights(flight.flightNumber || 0, flight);
+  const updateFlights = async (bookings: IBooking) => {
+    const {status} = await bookingApi.updateBooking(bookings.id || "", bookings);
     if (status) {
-      setFlights((old) => [...old.filter((item) => item.flightNumber === flight.flightNumber ? undefined : item), flight]);
+      setBookings((old) => [...old.filter((item) => item.id === bookings.id ? undefined : item), bookings]);
       return toast.success('Voo editado com sucesso')
     }
     toast.error('Erro ao editar Voo');
@@ -71,31 +71,41 @@ export function Flights(): JSX.Element {
 
   return (
     <Wrapper>
-      <CreateModal visible={createModal} setVisible={setCreateModal} callback={addFlights} />
-      <EditModal flights={flight ?? {
-        daysOfWeek: [""],
-        flightNumber: 0,
-        destination: {
-          altitude: 100,
-          name: "asd",
-          location: [0, 1]
-        },
-        plane: {
-          manufacturingDate: '',
-          model: {
-            description: "",
-            manufacturer: "",
-            id: ""
+      <CreateModal visible={createModal} setVisible={setCreateModal} callback={addBooking} />
+      <EditModal bookings={booking ?? {
+        date: '',
+        id: "",
+        flight: {
+          daysOfWeek: [""],
+          flightNumber: 0,
+          destination: {
+            altitude: 100,
+            name: "asd",
+            location: [0, 1]
           },
-          registration: ""
+          plane: {
+            manufacturingDate: '',
+            model: {
+              description: "",
+              manufacturer: "",
+              id: ""
+            },
+            registration: ""
+          },
+          source: {
+            altitude: 100,
+            name: "asd",
+            location: [0, 1]
+          },
+          tileLenght: "",
+          times: [""],
         },
-        source: {
-          altitude: 100,
-          name: "asd",
-          location: [0, 1]
-        },
-        tileLenght: "",
-        times: [""],
+        pilot: {
+          abbleToFligh: [],
+          name: "",
+          id: "",
+          password: ""
+        }
       }} visible={editModal} setVisible={seteditModal} callback={updateFlights} />
       <Container fluid>
         <Row className="justify-content-md-center" md={6} style={{ gap: 10, alignItems:'center' }}>
@@ -124,8 +134,9 @@ export function Flights(): JSX.Element {
             const origin = document.querySelector<HTMLInputElement>("#filter-origin")?.value || "";
             const destination = document.querySelector<HTMLInputElement>("#filter-destination")?.value || "";
             if(origin === destination) return toast.warning("Destino e origem devem ser diferentes")
-            const {data, status} = await flightsApi.getFlight("", origin, destination)
-            if(status && Array.isArray(data) && data.length > 0) setFlights(Array.isArray(data) ? data : [data]);
+            const {data, status} = await bookingApi.getFlight("", origin, destination)
+            console.log({data});
+            if(status && !!data) setBookings(Array.isArray(data) ? data : [data]);
             else toast.warning("Nenhum voo com essas informações")
           }} variant="info">Filtrar</Button >
         </Row>
@@ -133,39 +144,27 @@ export function Flights(): JSX.Element {
         <Table striped bordered hover variant="dark" cellPadding={10}>
           <thead>
             <tr>
+              <th>ID</th>
               <th>Numero de Voo</th>
-              <th>Avião</th>
-              <th>Destino</th>
-              <th>Origem</th>
-              <th>Horarios</th>
-              <th>Dias da Semana</th>
+              <th>Data</th>
+              <th>Piloto</th>
               <th>...</th>
             </tr>
           </thead>
           <tbody>
             {
-              flights.length > 0 ?
-                flights.map((flight) => {
+              bookings.length > 0 ?
+                bookings.map((booking) => {
                   return (
-                    <tr key={flight.flightNumber}>
-                      <td>{flight.flightNumber}</td>
-                      <td>{flight.plane.model.description}</td>
-                      <td>{flight.destination.icao}</td>
-                      <td>{flight.source.icao}</td>
-                      <td>
-                        {
-                          flight.times && flight.times.map((flight) => <PlaneItem key={flight}>{flight}</PlaneItem>)
-                        }
-                      </td>
-                      <td>
-                        {
-                          flight.daysOfWeek && flight.daysOfWeek.map((day) => <PlaneItem key={day}>{day}</PlaneItem>)
-                        }
-                      </td>
+                    <tr key={booking.id}>
+                      <td>{booking.id}</td>
+                      <td>{booking.flight.flightNumber}</td>
+                      <td>{booking.date}</td>
+                      <td>{booking.pilot.name}  </td>
                       <td style={{ cursor: 'pointer', display: 'flex', gap: 10 }} >
-                        <span onClick={() => deleteFlights(flight)}>Deletar</span>
+                        <span onClick={() => deleteFlights(booking)}>Deletar</span>
                         <span onClick={() => {
-                          setFlight(flight);
+                          setBooking(booking);
                           seteditModal(true);
                         }}>Editar</span>
                       </td>
@@ -183,7 +182,6 @@ export function Flights(): JSX.Element {
                       ariaLabel="mutating-dots-loading"
                       wrapperStyle={{ margin: '0 auto' }}
                       wrapperClass=""
-                      visible={true}
                     />
                   </td>
                   <td>

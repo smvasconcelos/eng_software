@@ -1,9 +1,13 @@
+import { IModels, modelsApi } from 'api/models/models';
+import { IPlanes, planesApi } from 'api/planes/planes';
+import { useEffect, useMemo, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { IEditModalProps } from './EditModal.types';
-import { useEffect, useMemo } from 'react';
+import { IAirports, airportApi } from 'api/airports/airports';
+import { PlaneItem } from 'pages/Flights/Flights.styles';
 
 export function EditModal({
   setVisible,
@@ -11,53 +15,137 @@ export function EditModal({
   visible,
   flights
 }: IEditModalProps): JSX.Element {
+  const [planes, setPlanes] = useState<IPlanes[]>([]);
+  const [timesInput, setTimesInput] = useState<string[]>(flights.times || []);
+  const daysOfWeek = useMemo(() => {
+    return ["Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sabado", "Domingo"]
+  }, [])
+  const [airports, setAirports] = useState<IAirports[]>([]);
+
   const onSubmit = (e: any) => {
     e.preventDefault();
-    const inputs = e.target.querySelectorAll('input');
-    const [name, icao, locations, height] = [...inputs].map((input: HTMLFormElement) => {
+    const inputs = e.target.querySelectorAll('input, select');
+    const [flightNumber, plane, origin, destination, daysOfWeek, times, tileLenght] = [...inputs].map((input: HTMLFormElement) => {
+      if(input.id === 'days') {
+        return [...input.options].filter(option => option.selected).map(option => option.value);
+      }
       return input.value;
     })
 
-    if (!name || !locations || !height || !icao) return toast.warning('Preencha todos os campos para presseguir');
+    if (!flightNumber || !plane ||  !origin ||  !destination ||  !daysOfWeek ||  !timesInput || !tileLenght) return toast.warning('Preencha todos os campos para presseguir');
 
-    // callback({
-    //   name: flights.name || name,
-    //   icao: icao || flights.icao,
-    //   altitude: height || flights.altitude,
-    //   location: locations.split(',') || flights.location,
-    // })
+    if(origin === destination) return toast.warning('O destino deve ser diferente da origem');
+
+    callback({
+      flightNumber: parseInt(flightNumber),
+      plane: planes.filter(item => item.registration === plane)[0],
+      source: airports.filter((item) => item.icao === origin)[0],
+      destination: airports.filter((item) => item.icao === origin)[0],
+      daysOfWeek,
+      times: timesInput,
+      tileLenght: tileLenght ,
+    })
     setVisible(false);
   }
 
 
+
+  const getData = async () => {
+    const {data:plane, status: planeStatus} = await planesApi.getPlanes();
+    if(!planeStatus) return;
+    setPlanes(plane || []);
+    const {data:airport, status: airportStatus} = await airportApi.getAirports();
+    if(!airportStatus) return;
+    setAirports(airport || []);
+  }
+
+  useEffect(() => {
+    getData();
+    setTimesInput(flights.times);
+    console.log(new Date(flights.tileLenght).getHours())
+  }, [flights])
+
   return (
     <Modal show={visible} onHide={() => setVisible(false)}>
       <Modal.Header closeButton>
-        <Modal.Title>Editando aeroporto - {flights.source.name}</Modal.Title>
+        <Modal.Title>Editando Voo - ${flights.flightNumber}</Modal.Title>
       </Modal.Header>
       <Form onSubmit={onSubmit}>
         <Modal.Body>
-          {/* <Form.Group className="mb-3" controlId="name">
-            <Form.Label>Nome</Form.Label>
-            <Form.Control disabled defaultValue={flights.name} type="text" placeholder="Congonhas flights" />
+          <Form.Group className="mb-3" controlId="flightNumber">
+            <Form.Label>Número de Voo</Form.Label>
+            <Form.Control  defaultValue={flights.flightNumber} disabled type="number" placeholder="123123123123" />
           </Form.Group>
-          <Form.Group  className="mb-3" controlId="icao">
-            <Form.Label>ICAO</Form.Label>
-            <Form.Control disabled defaultValue={flights.icao} type="text" placeholder="text" />
+          <Form.Group className="mb-3" controlId="plane">
+            <Form.Label>Avião</Form.Label>
+            <Form.Select defaultValue={flights.plane.registration}>
+              {
+                planes.length > 0 && planes.map((plane) =>
+                  <option key={`destination-${plane.registration}`} value={plane.registration}>{plane.model.description}</option>
+                )
+              }
+            </Form.Select>
           </Form.Group>
-          <Form.Group className="mb-3" controlId="locations">
-            <Form.Label>Localização</Form.Label>
-            <Form.Control defaultValue={locations}  type="text" placeholder="13,13" />
+          <Form.Group className="mb-3" controlId="destination">
+            <Form.Label>Destino</Form.Label>
+            <Form.Select defaultValue={flights.destination.icao}>
+              {
+                airports.length > 0 && airports.map((airport) =>
+                  <option key={`destination-${airport.icao}`} value={airport.icao}>{airport.name}</option>
+                )
+              }
+            </Form.Select>
           </Form.Group>
-          <Form.Group className="mb-3" controlId="height">
-            <Form.Label>Altitude</Form.Label>
-            <Form.Control defaultValue={flights.altitude}  type="text" placeholder="100.20" />
-          </Form.Group> */}
+          <Form.Group className="mb-3" controlId='origin' >
+            <Form.Label>Origem</Form.Label>
+            <Form.Select defaultValue={flights.source.icao}>
+              {
+                airports.length > 0 && airports.map((airport) =>
+                  <option key={`origin-${airport.icao}`}  value={airport.icao}>{airport.name}</option>
+                )
+              }
+            </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId='days' >
+            <Form.Label>Dias</Form.Label>
+            <Form.Select defaultValue={flights.daysOfWeek} multiple>
+              {
+                daysOfWeek.length > 0 && daysOfWeek.map((day) =>
+                  <option key={`origin-${day}`}  value={day}>{day}</option>
+                )
+              }
+            </Form.Select>
+          </Form.Group>
+          <Form.Group  className="mb-3" controlId="times">
+            <Form.Label>Horários - Clique em um item para remover o tempo</Form.Label>
+            <Form.Control type="time" placeholder="10:30" />
+            <br/>
+            <PlaneItem onClick={() => {
+              const value = document.querySelector<HTMLInputElement>("#times")?.value || "";
+              if(timesInput.includes(value)) return toast.warning("Horário já cadastrado");
+              setTimesInput((prev) => [...prev, value]);
+            }} style={{color: 'white', cursor: 'pointer'}}>Salvar Tempo</PlaneItem>
+          </Form.Group>
+          {
+            timesInput.length > 0 && timesInput.map((item, idx) => {
+              return(
+                <PlaneItem style={{color: 'white', cursor: 'pointer'}} onClick={() => {
+                  setTimesInput((prev) => prev.filter((prevItem) => prevItem !== item))
+                }} key={idx}>{item}</PlaneItem>
+              )
+            })
+          }
+          <br/>
+          <br/>
+          <Form.Group className="mb-3" controlId="tileLenght">
+            <Form.Label>Duração</Form.Label>
+            <Form.Control defaultValue={flights.tileLenght.replace(".000Z", "")} type="datetime-local" placeholder="Congonhas Airport" />
+          </Form.Group>
         </Modal.Body>
 
         <Modal.Footer>
           <Button onClick={() => setVisible(false)} variant="secondary">Cancelar</Button>
-          <Button type='submit' variant="primary">Salvar Alterações</Button>
+          <Button type='submit' variant="primary">Criar Voo</Button>
         </Modal.Footer>
       </Form>
     </Modal>

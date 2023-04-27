@@ -12,7 +12,7 @@ export interface IBooking {
 export const bookingApi = {
   getBookings: async (): Promise<IDefaultResponse<IBooking[]>> => {
     try{
-      const response = await api.get("/booking");
+      const response = await api.get("/flightSchedules");
       const {data, status} = response;
       return {data, status: status === 200};
     }catch(e){
@@ -21,7 +21,7 @@ export const bookingApi = {
   },
   getBooking: async (id: string): Promise<IDefaultResponse<IBooking>> => {
     try{
-      const response = await api.get(`/booking/${id}`);
+      const response = await api.get(`/flightSchedules/${id}`);
       const {data, status} = response;
       return {data, status: status === 200};
     }catch(e){
@@ -30,7 +30,7 @@ export const bookingApi = {
   },
   updateBooking: async (id: string, Booking: IBooking): Promise<IDefaultResponse<boolean>> => {
     try{
-      const response = await api.put(`/booking/${id}`, Booking);
+      const response = await api.put(`/flightSchedules/${id}`, Booking);
       const {data, status} = response;
       return {data, status: status === 200};
     }catch(e){
@@ -39,7 +39,7 @@ export const bookingApi = {
   },
   deleteBooking: async (id: string): Promise<IDefaultResponse<boolean>> => {
     try{
-      const response = await api.delete(`/booking/${id}`);
+      const response = await api.delete(`/flightSchedules/${id}`);
       const {data, status} = response;
       return {data, status: status === 200};
     }catch(e){
@@ -48,7 +48,7 @@ export const bookingApi = {
   },
   createBooking: async (Booking: IBooking): Promise<IDefaultResponse<IBooking>> => {
     try{
-      const response = await api.post("/booking", Booking);
+      const response = await api.post("/flightSchedules", Booking);
       const {data, status} = response;
       return {data, status: status === 200};
     }catch(e){

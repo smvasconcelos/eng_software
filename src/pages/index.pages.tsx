@@ -5,6 +5,7 @@ import { Models } from "./Models/Models.page"
 import { Button } from "react-bootstrap"
 import { Airports } from "./Airports/Airports.page"
 import { Flights } from "./Flights/Flights.page"
+import { Booking } from "./Booking/Booking.page"
 
 type ActivePageType = "PILOTS" | "PLANES" | "MODELS" | "AIRPORTS" | "FLIGHTS" | "BOOKING"
 
@@ -18,12 +19,14 @@ export function Pages(): JSX.Element {
         <Button onClick={() => setActivePage("MODELS")} variant="success">Modelos</Button>
         <Button onClick={() => setActivePage("AIRPORTS")} variant="success">Aeroportos</Button>
         <Button onClick={() => setActivePage("FLIGHTS")} variant="success">Voos</Button>
+        <Button onClick={() => setActivePage("BOOKING")} variant="success">Agendamento</Button>
       </div>
       {activePage === "PILOTS" && <Pilots/>}
       {activePage === "PLANES" && <Planes/>}
       {activePage === "MODELS" && <Models/>}
       {activePage === "AIRPORTS" && <Airports />}
       {activePage === "FLIGHTS" && <Flights />}
+      {activePage === "BOOKING" && <Booking />}
     </>
   )
 }

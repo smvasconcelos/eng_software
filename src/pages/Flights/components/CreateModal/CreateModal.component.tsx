@@ -52,7 +52,7 @@ export function CreateModal({
       destination: airports.filter((item) => item.icao === origin)[0],
       daysOfWeek,
       times: timesInput,
-      tileLenght: tileLenght ,
+      tileLenght: tileLenght + ".00Z",
     })
     setVisible(false);
   }
@@ -146,7 +146,7 @@ export function CreateModal({
           <br/>
           <Form.Group className="mb-3" controlId="tileLenght">
             <Form.Label>Duração</Form.Label>
-            <Form.Control type="time" placeholder="Congonhas Airport" />
+            <Form.Control type="datetime-local" placeholder="Congonhas Airport" />
           </Form.Group>
         </Modal.Body>
 
