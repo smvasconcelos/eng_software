@@ -29,7 +29,7 @@ export function CreateModal({
     callback({
       flight: flights.filter(item => item.flightNumber === parseInt(flightNumber))[0],
       pilot: pilots.filter(item => item.id === pilot)[0],
-      date: date,
+      date: date + ".00Z",
     })
     setVisible(false);
   }

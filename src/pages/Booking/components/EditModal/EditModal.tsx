@@ -29,12 +29,12 @@ export function EditModal({
     callback({
       flight: flights.filter(item => item.flightNumber === parseInt(flightNumber))[0],
       pilot: pilots.filter(item => item.id === pilot)[0],
-      date: date,
+      date: date + ".00Z",
     })
     setVisible(false);
   }
 
-
+  const date =bookings.date;
 
   const getData = async () => {
     const {data:pilot, status: pilotsStatus} = await pilotsApi.getPilots();
@@ -46,14 +46,14 @@ export function EditModal({
   }
 
   useEffect(() => {
-    console.log(bookings.date)
     getData();
+    console.log(bookings.date);
   }, [bookings.date])
 
   return (
     <Modal show={visible} onHide={() => setVisible(false)}>
       <Modal.Header closeButton>
-        <Modal.Title>Criar Voo</Modal.Title>
+        <Modal.Title>Editando Agendamento - {bookings.id}</Modal.Title>
       </Modal.Header>
       <Form onSubmit={onSubmit}>
         <Modal.Body>
@@ -80,7 +80,7 @@ export function EditModal({
 
           <Form.Group className="mb-3" controlId="date">
             <Form.Label>Dia e Hora</Form.Label>
-            <Form.Control defaultValue={bookings.date.replace(".000Z", "")} type="datetime-local" placeholder="2022-01-01T01:20:001Z" />
+            <Form.Control defaultValue={date.replace(".00Z", "")} type="datetime-local" placeholder="2022-01-01T01:20:001Z" />
           </Form.Group>
         </Modal.Body>
 

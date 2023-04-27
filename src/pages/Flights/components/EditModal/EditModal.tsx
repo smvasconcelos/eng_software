@@ -25,25 +25,26 @@ export function EditModal({
   const onSubmit = (e: any) => {
     e.preventDefault();
     const inputs = e.target.querySelectorAll('input, select');
-    const [flightNumber, plane, origin, destination, daysOfWeek, times, tileLenght] = [...inputs].map((input: HTMLFormElement) => {
+    const [flightNumber, plane, destination, origin, daysOfWeek, times] = [...inputs].map((input: HTMLFormElement) => {
       if(input.id === 'days') {
         return [...input.options].filter(option => option.selected).map(option => option.value);
       }
       return input.value;
     })
 
-    if (!flightNumber || !plane ||  !origin ||  !destination ||  !daysOfWeek ||  !timesInput || !tileLenght) return toast.warning('Preencha todos os campos para presseguir');
+    if (!flightNumber || !plane ||  !origin ||  !destination ||  !daysOfWeek ||  !timesInput ) return toast.warning('Preencha todos os campos para presseguir');
 
     if(origin === destination) return toast.warning('O destino deve ser diferente da origem');
+
 
     callback({
       flightNumber: parseInt(flightNumber),
       plane: planes.filter(item => item.registration === plane)[0],
       source: airports.filter((item) => item.icao === origin)[0],
-      destination: airports.filter((item) => item.icao === origin)[0],
+      destination: airports.filter((item) => item.icao === destination)[0],
       daysOfWeek,
       times: timesInput,
-      tileLenght: tileLenght ,
+      tileLenght: flights.tileLenght,
     })
     setVisible(false);
   }
@@ -62,7 +63,6 @@ export function EditModal({
   useEffect(() => {
     getData();
     setTimesInput(flights.times);
-    console.log(new Date(flights.tileLenght).getHours())
   }, [flights])
 
   return (
@@ -137,15 +137,11 @@ export function EditModal({
           }
           <br/>
           <br/>
-          <Form.Group className="mb-3" controlId="tileLenght">
-            <Form.Label>Duração</Form.Label>
-            <Form.Control defaultValue={flights.tileLenght.replace(".000Z", "")} type="datetime-local" placeholder="Congonhas Airport" />
-          </Form.Group>
         </Modal.Body>
 
         <Modal.Footer>
           <Button onClick={() => setVisible(false)} variant="secondary">Cancelar</Button>
-          <Button type='submit' variant="primary">Criar Voo</Button>
+          <Button type='submit' variant="primary">Editar Voo</Button>
         </Modal.Footer>
       </Form>
     </Modal>

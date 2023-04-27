@@ -23,7 +23,7 @@ export const bookingApi = {
     try{
       var response;
       if(custom){
-        response = await api.get(`/flightSchedules/${custom}`);
+        response = await api.get(`/flightSchedules?${custom}`);
       }else{
         response = await api.get(`/flightSchedules/${id}`);
       }

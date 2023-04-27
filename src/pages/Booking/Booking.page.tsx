@@ -8,6 +8,8 @@ import { PlaneItem, Wrapper } from "./Booking.styles";
 import { IPlanes, planesApi } from "api/planes/planes";
 import { IAirports, airportApi } from "api/airports/airports";
 import { IBooking, bookingApi } from "api/booking/booking";
+import { IPilots, pilotsApi } from "api/pilots/pilots";
+import { IModels, modelsApi } from "api/models/models";
 
 export function Booking(): JSX.Element {
   const [bookings, setBookings] = useState<IBooking[]>([]);
@@ -16,6 +18,8 @@ export function Booking(): JSX.Element {
   const [editModal, seteditModal] = useState<boolean>(false);
   const [planes, setPlanes] = useState<IPlanes[]>([]);
   const [airports, setAirports] = useState<IAirports[]>([]);
+  const [models, setModels] = useState<IModels[]>([]);
+  const [pilots, setPilots] = useState<IPilots[]>([]);
 
   const getData = async () => {
     const {data, status} = await bookingApi.getBookings();
@@ -63,6 +67,12 @@ export function Booking(): JSX.Element {
     const {data:airport, status: airportStatus} = await airportApi.getAirports();
     if(!airportStatus) return;
     setAirports(airport || []);
+    const {data:pilot, status: PilotStatus} = await pilotsApi.getPilots();
+    if(!PilotStatus) return;
+    setPilots(pilot || []);
+    const {data:model, status: ModelStatus} = await modelsApi.getModels();
+    if(!ModelStatus) return;
+    setModels(model || []);
   }
 
   useEffect(() => {
@@ -110,19 +120,19 @@ export function Booking(): JSX.Element {
       <Container fluid>
         <Row className="justify-content-md-center" md={6} style={{ gap: 10, alignItems:'center' }}>
           <Button style={{height: 'fit-content'}} onClick={() => setCreateModal(true)} variant="success">Adicionar Agendamento</Button>
-          <Form.Group className="mb-3" controlId="filter-origin">
-            <Form.Label>Avião</Form.Label>
+          <Form.Group className="mb-3" controlId="filter-plane">
+            <Form.Label style={{color: "#fff"}}>Avião</Form.Label>
             <Form.Select>
               <option  value={""}>TODOS</option>
               {
-                airports.length > 0 && airports.map((airport) =>
-                  <option key={`origin-${airport.icao}`} value={airport.icao}>{airport.name}</option>
+                planes.length > 0 && planes.map((plane) =>
+                  <option key={`origin-${plane.registration}`} value={plane.registration}>{plane.registration}</option>
                 )
               }
             </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3" controlId="filter-destination">
-            <Form.Label>Destino</Form.Label>
+            <Form.Label style={{color: "#fff"}}>Destino</Form.Label>
             <Form.Select>
               <option  value={""}>TODOS</option>
               {
@@ -132,14 +142,50 @@ export function Booking(): JSX.Element {
               }
             </Form.Select>
           </Form.Group>
+          <Form.Group className="mb-3" controlId="filter-origin">
+            <Form.Label style={{color: "#fff"}}>Origem</Form.Label>
+            <Form.Select>
+              <option  value={""}>TODOS</option>
+              {
+                airports.length > 0 && airports.map((airport) =>
+                  <option key={`destination-${airport.icao}`} value={airport.icao}>{airport.name}</option>
+                )
+              }
+            </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="filter-model">
+            <Form.Label style={{color: "#fff"}}>Modelo</Form.Label>
+            <Form.Select>
+              <option  value={""}>TODOS</option>
+              {
+                models.length > 0 && models.map((models) =>
+                  <option key={`destination-${models.id}`} value={models.description}>{models.description}</option>
+                )
+              }
+            </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="filter-pilot">
+            <Form.Label style={{color: "#fff"}}>Pilotos</Form.Label>
+            <Form.Select>
+              <option  value={""}>TODOS</option>
+              {
+                pilots.length > 0 && pilots.map((pilot) =>
+                  <option key={`destination-${pilot.id}`} value={pilot.id}>{pilot.name}</option>
+                )
+              }
+            </Form.Select>
+          </Form.Group>
           <Form.Group className="mb-3" controlId="filter-datetime">
-            <Form.Label>Data</Form.Label>
+            <Form.Label style={{color: "#fff"}}>Data</Form.Label>
             <Form.Control type="datetime-local" />
           </Form.Group>
           <Button style={{height: 'fit-content'}} onClick={async () => {
             const origin = document.querySelector<HTMLInputElement>("#filter-origin")?.value || "";
             const destination = document.querySelector<HTMLInputElement>("#filter-destination")?.value || "";
             const date = document.querySelector<HTMLInputElement>("#filter-datetime")?.value || "";
+            const pilot = document.querySelector<HTMLInputElement>("#filter-pilot")?.value || "";
+            const plane = document.querySelector<HTMLInputElement>("#filter-plane")?.value || "";
+            const model = document.querySelector<HTMLInputElement>("#filter-model")?.value || "";
             if((origin === destination) && !(origin !== 'TODOS' && destination !== "TODOS")) return toast.warning("Destino e origem devem ser diferentes")
             var custom = "";
             if(origin !== 'TODOS' && origin !== ''){
@@ -151,9 +197,17 @@ export function Booking(): JSX.Element {
             if(date !== ''){
               custom += `&date=${date + ".00Z"}`
             }
-            const {data, status} = await bookingApi.getBooking("", "?"+custom);
-            console.log(custom)
-            if(status && !!data) setBookings(Array.isArray(data) ? data : [data]);
+            if(pilot !== ''){
+              custom += `&pilot=${pilot}`
+            }
+            if(plane !== ''){
+              custom += `&plane=${plane}`
+            }
+            if(model !== ''){
+              custom += `&model=${model}`
+            }
+            const {data, status} = await bookingApi.getBooking("",custom);
+            if(status && data) setBookings(Array.isArray(data) ? data : bookings);
             else toast.warning("Nenhum voo com essas informações")
           }} variant="info">Filtrar</Button >
         </Row>
@@ -163,6 +217,7 @@ export function Booking(): JSX.Element {
             <tr>
               <th>ID</th>
               <th>Numero de Voo</th>
+              <th>Modelo</th>
               <th>Data</th>
               <th>Piloto</th>
               <th>...</th>
@@ -176,6 +231,7 @@ export function Booking(): JSX.Element {
                     <tr key={booking.id}>
                       <td>{booking.id}</td>
                       <td>{booking.flight.flightNumber}</td>
+                      <td>{booking.flight.plane.model.description}</td>
                       <td>{booking.date}</td>
                       <td>{booking.pilot.name}  </td>
                       <td style={{ cursor: 'pointer', display: 'flex', gap: 10 }} >
