@@ -154,7 +154,9 @@ export function Flights(): JSX.Element {
                       <td>{flight.source.icao}</td>
                       <td>
                         {
-                          flight.times && flight.times.map((flight) => <PlaneItem key={flight}>{flight}</PlaneItem>)
+                          flight.times && flight.times.map((flight) => <PlaneItem key={flight}>{
+                            new Date(Date.apply(flight)).toLocaleDateString() +  " " + new Date(Date.apply(flight)).toLocaleTimeString()
+                          }</PlaneItem>)
                         }
                       </td>
                       <td>
