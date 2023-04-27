@@ -232,7 +232,7 @@ export function Booking(): JSX.Element {
                       <td>{booking.id}</td>
                       <td>{booking.flight.flightNumber}</td>
                       <td>{booking.flight.plane.model.description}</td>
-                      <td>{booking.date}</td>
+                      <td>{new Date(Date.apply(booking.date)).toLocaleDateString() +  " " + new Date(Date.apply(booking.date)).toLocaleTimeString()}</td>
                       <td>{booking.pilot.name}  </td>
                       <td style={{ cursor: 'pointer', display: 'flex', gap: 10 }} >
                         <span onClick={() => deleteFlights(booking)}>Deletar</span>
