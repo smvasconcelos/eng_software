@@ -19,9 +19,14 @@ export const bookingApi = {
       return {data: null, status: false};
     }
   },
-  getBooking: async (id: string): Promise<IDefaultResponse<IBooking>> => {
+  getBooking: async (id: string, custom ?: string): Promise<IDefaultResponse<IBooking>> => {
     try{
-      const response = await api.get(`/flightSchedules/${id}`);
+      var response;
+      if(custom){
+        response = await api.get(`/flightSchedules/${custom}`);
+      }else{
+        response = await api.get(`/flightSchedules/${id}`);
+      }
       const {data, status} = response;
       return {data, status: status === 200};
     }catch(e){

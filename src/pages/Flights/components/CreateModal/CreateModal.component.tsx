@@ -49,7 +49,7 @@ export function CreateModal({
       flightNumber: parseInt(flightNumber),
       plane: planes.filter(item => item.registration === plane)[0],
       source: airports.filter((item) => item.icao === origin)[0],
-      destination: airports.filter((item) => item.icao === origin)[0],
+      destination: airports.filter((item) => item.icao === destination)[0],
       daysOfWeek,
       times: timesInput,
       tileLenght: tileLenght + ".00Z",
