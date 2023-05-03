@@ -6,8 +6,9 @@ import { Button } from "react-bootstrap"
 import { Airports } from "./Airports/Airports.page"
 import { Flights } from "./Flights/Flights.page"
 import { Booking } from "./Booking/Booking.page"
+import { Passenger } from "./Passenger/Passenger.page"
 
-type ActivePageType = "PILOTS" | "PLANES" | "MODELS" | "AIRPORTS" | "FLIGHTS" | "BOOKING"
+type ActivePageType = "PILOTS" | "PLANES" | "MODELS" | "AIRPORTS" | "FLIGHTS" | "BOOKING" | "PASSENGER"
 
 export function Pages(): JSX.Element {
   const [activePage, setActivePage] = useState<ActivePageType>("PILOTS")
@@ -20,6 +21,7 @@ export function Pages(): JSX.Element {
         <Button onClick={() => setActivePage("AIRPORTS")} variant="success">Aeroportos</Button>
         <Button onClick={() => setActivePage("FLIGHTS")} variant="success">Voos</Button>
         <Button onClick={() => setActivePage("BOOKING")} variant="success">Agendamento</Button>
+        <Button onClick={() => setActivePage("PASSENGER")} variant="success">Passageiros</Button>
       </div>
       {activePage === "PILOTS" && <Pilots/>}
       {activePage === "PLANES" && <Planes/>}
@@ -27,6 +29,7 @@ export function Pages(): JSX.Element {
       {activePage === "AIRPORTS" && <Airports />}
       {activePage === "FLIGHTS" && <Flights />}
       {activePage === "BOOKING" && <Booking />}
+      {activePage === "PASSENGER" && <Passenger />}
     </>
   )
 }
