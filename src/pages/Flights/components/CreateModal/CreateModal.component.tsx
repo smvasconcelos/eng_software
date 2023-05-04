@@ -146,7 +146,7 @@ export function CreateModal({
           <br/>
           <Form.Group className="mb-3" controlId="tileLenght">
             <Form.Label>Duração</Form.Label>
-            <Form.Control type="datetime-local" placeholder="Congonhas Airport" />
+            <Form.Control type="datetime-local" placeholder="12:30" />
           </Form.Group>
         </Modal.Body>
 

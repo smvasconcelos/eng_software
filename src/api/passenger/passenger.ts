@@ -3,7 +3,7 @@ import { IDefaultResponse, api } from "../server";
 export interface IPassenger {
   id?: string;
   cpf: string;
-  passaport: string | number;
+  passport: string | number;
   country: string;
   name: string;
   surname: string;

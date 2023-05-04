@@ -44,7 +44,7 @@ export function EditModal({
       destination: airports.filter((item) => item.icao === destination)[0],
       daysOfWeek,
       times: timesInput,
-      tileLenght: flights.tileLenght,
+      tileLenght: times + ".00Z",
     })
     setVisible(false);
   }
@@ -68,7 +68,7 @@ export function EditModal({
   return (
     <Modal show={visible} onHide={() => setVisible(false)}>
       <Modal.Header closeButton>
-        <Modal.Title>Editando Voo - ${flights.flightNumber}</Modal.Title>
+        <Modal.Title>Editando Voo - {flights.flightNumber}</Modal.Title>
       </Modal.Header>
       <Form onSubmit={onSubmit}>
         <Modal.Body>
@@ -137,6 +137,10 @@ export function EditModal({
           }
           <br/>
           <br/>
+          <Form.Group className="mb-3" controlId="tileLenght">
+            <Form.Label>Duração</Form.Label>
+            <Form.Control defaultValue={flights.tileLenght.replace(".00Z", "")} type="datetime-local" placeholder="12:30" />
+          </Form.Group>
         </Modal.Body>
 
         <Modal.Footer>

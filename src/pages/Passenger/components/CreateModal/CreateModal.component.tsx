@@ -16,12 +16,12 @@ export function CreateModal({
   const onSubmit = (e: any) => {
     e.preventDefault();
     const inputs = e.target.querySelectorAll('input, select');
-    const [name, surname, cpf, password, country, passaport,miles] = [...inputs].map((input: HTMLFormElement) => {
+    const [name, surname, cpf, password, country, passport,miles] = [...inputs].map((input: HTMLFormElement) => {
       return input.value;
     })
 
-    console.log({name, surname, cpf, password, country, passaport,miles});
-    if (!name || !surname || !cpf || !password || !country || !passaport || !miles) return toast.warning('Preencha todos os campos para presseguir');
+    console.log({name, surname, cpf, password, country, passport,miles});
+    if (!name || !surname || !cpf || !password || !country || !passport || !miles) return toast.warning('Preencha todos os campos para presseguir');
 
     callback({
       name: name,
@@ -30,7 +30,7 @@ export function CreateModal({
       password: password,
       country: country,
       miles: miles,
-      passaport: parseInt(passaport),
+      passport: parseInt(passport),
     })
     setVisible(false);
   }
@@ -62,7 +62,7 @@ export function CreateModal({
             <Form.Label>País</Form.Label>
             <Form.Control type="text" placeholder="Brasil" />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="passaport">
+          <Form.Group className="mb-3" controlId="passport">
             <Form.Label>Passaport</Form.Label>
             <Form.Control type="text" placeholder="07785302555" />
           </Form.Group>

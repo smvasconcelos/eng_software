@@ -30,10 +30,14 @@ export function EditModal({
       cpf: cpf,
       country: country,
       miles: miles,
-      passaport: parseInt(passaport),
+      passport: parseInt(passaport),
     })
     setVisible(false);
   }
+
+  useEffect(() => {
+    console.log(passenger);
+  }, [passenger])
 
 
   return (
@@ -61,7 +65,7 @@ export function EditModal({
           </Form.Group>
           <Form.Group className="mb-3" controlId="passaport">
             <Form.Label>Passaport</Form.Label>
-            <Form.Control  defaultValue={passenger.passaport} type="text" placeholder="12312312312312" />
+            <Form.Control  defaultValue={passenger.passport} type="text" placeholder="12312312312312" />
           </Form.Group>
           <Form.Group className="mb-3" controlId="miles">
             <Form.Label>Milhas</Form.Label>
