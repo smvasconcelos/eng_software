@@ -104,6 +104,7 @@ export function Flights(): JSX.Element {
           <Form.Group className="mb-3" controlId="filter-origin">
             <Form.Label>Avião</Form.Label>
             <Form.Select>
+              <option  value={""}>TODOS</option>
               {
                 airports.length > 0 && airports.map((airport) =>
                   <option key={`origin-${airport.icao}`} value={airport.icao}>{airport.name}</option>
@@ -114,6 +115,7 @@ export function Flights(): JSX.Element {
           <Form.Group className="mb-3" controlId="filter-destination">
             <Form.Label>Destino</Form.Label>
             <Form.Select>
+              <option  value={""}>TODOS</option>
               {
                 airports.length > 0 && airports.map((airport) =>
                   <option key={`destination-${airport.icao}`} value={airport.icao}>{airport.name}</option>
@@ -124,11 +126,16 @@ export function Flights(): JSX.Element {
           <Button style={{height: 'fit-content'}} onClick={async () => {
             const origin = document.querySelector<HTMLInputElement>("#filter-origin")?.value || "";
             const destination = document.querySelector<HTMLInputElement>("#filter-destination")?.value || "";
-            if(origin === destination) return toast.warning("Destino e origem devem ser diferentes")
+            if(origin === destination && !(origin !== 'TODOS' && destination !== "TODOS")) return toast.warning("Destino e origem devem ser diferentes")
             const {data, status} = await flightsApi.getFlight("", origin, destination)
             if(status && Array.isArray(data) && data.length > 0) setFlights(Array.isArray(data) ? data : [data]);
             else toast.warning("Nenhum voo com essas informações")
           }} variant="info">Filtrar</Button >
+          <Button style={{height: 'fit-content'}} onClick={() => {
+            document.querySelectorAll<HTMLFormElement>('input, select').forEach((item) => {
+              item.value = '';
+            })
+          }} variant="info">Resetar Filtros</Button >
         </Row>
         <br />
         <Table striped bordered hover variant="dark" cellPadding={10}>

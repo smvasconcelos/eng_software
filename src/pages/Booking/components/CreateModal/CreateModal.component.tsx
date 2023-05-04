@@ -52,7 +52,7 @@ export function CreateModal({
   return (
     <Modal show={visible} onHide={() => setVisible(false)}>
       <Modal.Header closeButton>
-        <Modal.Title>Criar Voo</Modal.Title>
+        <Modal.Title>Criar Agendamento</Modal.Title>
       </Modal.Header>
       <Form onSubmit={onSubmit}>
         <Modal.Body>
@@ -85,7 +85,7 @@ export function CreateModal({
 
         <Modal.Footer>
           <Button onClick={() => setVisible(false)} variant="secondary">Cancelar</Button>
-          <Button type='submit' variant="primary">Criar Voo</Button>
+          <Button type='submit' variant="primary">Criar Agendamento</Button>
         </Modal.Footer>
       </Form>
     </Modal>

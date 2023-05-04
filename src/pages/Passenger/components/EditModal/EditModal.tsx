@@ -17,21 +17,20 @@ export function EditModal({
   const onSubmit = (e: any) => {
     e.preventDefault();
     const inputs = e.target.querySelectorAll('input, select');
-    const [name, surname, cpf, password, country, passaport,miles] = [...inputs].map((input: HTMLFormElement) => {
+    const [name, surname, cpf,country, passaport,miles] = [...inputs].map((input: HTMLFormElement) => {
       return input.value;
     })
 
-    if (!name || !surname || !cpf || !password || !country || !passaport || !miles) return toast.warning('Preencha todos os campos para presseguir');
+    if (!name || !surname || !cpf || !country || !passaport || !miles) return toast.warning('Preencha todos os campos para presseguir');
 
     callback({
       id: passenger.id,
       name: name,
       surname: surname,
       cpf: cpf,
-      password: password,
       country: country,
       miles: miles,
-      passaport: passaport,
+      passaport: parseInt(passaport),
     })
     setVisible(false);
   }
@@ -56,13 +55,17 @@ export function EditModal({
             <Form.Label>CPF</Form.Label>
             <Form.Control defaultValue={passenger.cpf} type="text" placeholder="07785302555" />
           </Form.Group>
+          <Form.Group className="mb-3" controlId="country">
+            <Form.Label>País</Form.Label>
+            <Form.Control  defaultValue={passenger.country} type="text" placeholder="Password" />
+          </Form.Group>
           <Form.Group className="mb-3" controlId="passaport">
             <Form.Label>Passaport</Form.Label>
-            <Form.Control  defaultValue={passenger.passaport} type="text" placeholder="Password" />
+            <Form.Control  defaultValue={passenger.passaport} type="text" placeholder="12312312312312" />
           </Form.Group>
           <Form.Group className="mb-3" controlId="miles">
             <Form.Label>Milhas</Form.Label>
-            <Form.Control defaultValue={passenger.miles}  type="number" placeholder="1" />
+            <Form.Control defaultValue={passenger.miles}  type="text" placeholder="1" />
           </Form.Group>
         </Modal.Body>
 

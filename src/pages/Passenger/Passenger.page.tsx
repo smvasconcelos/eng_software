@@ -26,7 +26,7 @@ export function Passenger(): JSX.Element {
   const addPassenger = async (passenger: IPassenger) => {
     const {status, data} = await passengersApi.createPassenger(passenger);
     if (status) {
-      setPassengers((old) => [...old, {...passenger }]);
+      setPassengers((old) => [...old, {...passenger , id: 'Não Retornado'}]);
       return toast.success('Piloto criado com sucesso')
     }
     toast.error('Erro ao criar passageiro');
@@ -68,7 +68,7 @@ export function Passenger(): JSX.Element {
       }} visible={editModal} setVisible={seteditModal} callback={updatePassenger} />
       <Container fluid>
         <Row className="justify-content-md-center" md={6} style={{ gap: 10 }}>
-          <Button onClick={() => setCreateModal(true)} variant="success">Adicionar Piloto</Button>
+          <Button onClick={() => setCreateModal(true)} variant="success">Adicionar Passageiro</Button>
         </Row>
         <br />
         <Table striped bordered hover variant="dark" cellPadding={10}>
@@ -102,6 +102,19 @@ export function Passenger(): JSX.Element {
                   )
                 })
                 : <tr>
+                  <td>
+                    <MutatingDots
+                      height="100"
+                      width="100"
+                      color="#B3CB39"
+                      secondaryColor='#6D771F'
+                      radius='12.5'
+                      ariaLabel="mutating-dots-loading"
+                      wrapperStyle={{ margin: '0 auto' }}
+                      wrapperClass=""
+                      visible={true}
+                    />
+                  </td>
                   <td>
                     <MutatingDots
                       height="100"

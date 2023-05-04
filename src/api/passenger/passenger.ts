@@ -3,11 +3,11 @@ import { IDefaultResponse, api } from "../server";
 export interface IPassenger {
   id?: string;
   cpf: string;
-  passaport: string;
+  passaport: string | number;
   country: string;
   name: string;
   surname: string;
-  password: string;
+  password?: string;
   miles: number;
 }
 

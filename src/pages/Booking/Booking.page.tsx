@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Container, Form, Row, Table } from "react-bootstrap";
 import { MutatingDots } from "react-loader-spinner";
 import { toast } from "react-toastify";
@@ -20,6 +20,8 @@ export function Booking(): JSX.Element {
   const [airports, setAirports] = useState<IAirports[]>([]);
   const [models, setModels] = useState<IModels[]>([]);
   const [pilots, setPilots] = useState<IPilots[]>([]);
+  const [dateBefore, setDateBefore] = useState<boolean>(false);
+  const [dateAfter, setDateAfter] = useState<boolean>(false);
 
   const getData = async () => {
     const {data, status} = await bookingApi.getBookings();
@@ -35,17 +37,17 @@ export function Booking(): JSX.Element {
     const {status, data} = await bookingApi.createBooking(booking);
     if (status) {
       setBookings((old) => Array.isArray(old) ? [ ...old, {...booking, id: booking.id}] : [{...booking, id: booking.id}]);
-      return toast.success('Voo criado com sucesso')
+      return toast.success('Agendamento criado com sucesso')
     }
-    toast.error('Erro ao criar Voo');
+    toast.error('Erro ao criar Agendamento');
   }
 
   const deleteFlights = async (bookings: IBooking) => {
-    if (window.confirm(`Deseja deletar o Voo ${bookings.id}?`)) {
+    if (window.confirm(`Deseja deletar o Agendamento ${bookings.id}?`)) {
       const {status} = await bookingApi.deleteBooking(bookings.id || "");
       if (status) {
         setBookings((old) => old.filter((item) => item.id === bookings.id ? undefined : item));
-        return toast.success('Voo deletado com sucesso')
+        return toast.success('Agendamento deletado com sucesso')
       }
       toast.error('Erro ao excluir voo');
     }
@@ -55,9 +57,9 @@ export function Booking(): JSX.Element {
     const {status} = await bookingApi.updateBooking(bookings.id || "", bookings);
     if (status) {
       setBookings((old) => [...old.filter((item) => item.id === bookings.id ? undefined : item), bookings]);
-      return toast.success('Voo editado com sucesso')
+      return toast.success('Agendamento editado com sucesso')
     }
-    toast.error('Erro ao editar Voo');
+    toast.error('Erro ao editar Agendamento');
   }
 
   const getData2 = async () => {
@@ -179,6 +181,34 @@ export function Booking(): JSX.Element {
             <Form.Label style={{color: "#fff"}}>Data</Form.Label>
             <Form.Control type="datetime-local" />
           </Form.Group>
+          <Row>
+            <Form.Group className="mb-3 row" controlId="data-range-after">
+              <Form.Label style={{color: "#fff"}}>Dias antes</Form.Label>
+              <Form.Check value={dateBefore ? 'checked' : ''} onChange={() => {
+                setDateBefore(!dateBefore);
+              }} type="checkbox" />
+            </Form.Group>
+            {
+              dateBefore &&
+              <Form.Group className="mb-3" controlId="daysBefore">
+                <Form.Control type="number" />
+              </Form.Group>
+            }
+          </Row>
+          <Row>
+            <Form.Group className="mb-3 row" controlId="data-range-after">
+              <Form.Label style={{color: "#fff"}}>Dias antes</Form.Label>
+              <Form.Check value={dateAfter ? 'checked' : ''} onChange={() => {
+                setDateAfter(!dateAfter);
+              }} type="checkbox" />
+            </Form.Group>
+            {
+              dateAfter &&
+              <Form.Group className="mb-3" controlId="daysAfter">
+                <Form.Control type="number" />
+              </Form.Group>
+            }
+          </Row>
           <Button style={{height: 'fit-content'}} onClick={async () => {
             const origin = document.querySelector<HTMLInputElement>("#filter-origin")?.value || "";
             const destination = document.querySelector<HTMLInputElement>("#filter-destination")?.value || "";
@@ -186,6 +216,8 @@ export function Booking(): JSX.Element {
             const pilot = document.querySelector<HTMLInputElement>("#filter-pilot")?.value || "";
             const plane = document.querySelector<HTMLInputElement>("#filter-plane")?.value || "";
             const model = document.querySelector<HTMLInputElement>("#filter-model")?.value || "";
+            const daysBefore = document.querySelector<HTMLInputElement>("#daysBefore")?.value || "";
+            const daysAfter = document.querySelector<HTMLInputElement>("#daysAfter")?.value || "";
             if((origin === destination) && !(origin !== 'TODOS' && destination !== "TODOS")) return toast.warning("Destino e origem devem ser diferentes")
             var custom = "";
             if(origin !== 'TODOS' && origin !== ''){
@@ -206,11 +238,23 @@ export function Booking(): JSX.Element {
             if(model !== ''){
               custom += `&model=${model}`
             }
+            if(daysBefore !== ''){
+              custom += `&range_start=${daysBefore}`
+            }
+            if(daysAfter !== ''){
+              custom += `&range_end=${daysAfter}`
+            }
             const {data, status} = await bookingApi.getBooking("",custom);
             if(status && data) setBookings(Array.isArray(data) ? data : bookings);
             else toast.warning("Nenhum voo com essas informações")
           }} variant="info">Filtrar</Button >
+        <Button style={{height: 'fit-content'}} onClick={() => {
+          document.querySelectorAll<HTMLFormElement>('input, select').forEach((item) => {
+            item.value = '';
+          })
+        }} variant="info">Resetar Filtros</Button >
         </Row>
+        <br />
         <br />
         <Table striped bordered hover variant="dark" cellPadding={10}>
           <thead>
@@ -227,12 +271,13 @@ export function Booking(): JSX.Element {
             {
               bookings.length > 0 ?
                 bookings.map((booking) => {
+                  console.log(booking.date);
                   return (
                     <tr key={booking.id}>
                       <td>{booking.id}</td>
                       <td>{booking.flight.flightNumber}</td>
                       <td>{booking.flight.plane.model.description}</td>
-                      <td>{new Date(Date.apply(booking.date)).toLocaleDateString() +  " " + new Date(Date.apply(booking.date)).toLocaleTimeString()}</td>
+                      <td>{booking.date.replace('.00Z', '').replace("T", " ").replaceAll("-", "/")}</td>
                       <td>{booking.pilot.name}  </td>
                       <td style={{ cursor: 'pointer', display: 'flex', gap: 10 }} >
                         <span onClick={() => deleteFlights(booking)}>Deletar</span>

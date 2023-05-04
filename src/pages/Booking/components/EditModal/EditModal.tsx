@@ -30,6 +30,7 @@ export function EditModal({
       flight: flights.filter(item => item.flightNumber === parseInt(flightNumber))[0],
       pilot: pilots.filter(item => item.id === pilot)[0],
       date: date + ".00Z",
+      id: bookings.id,
     })
     setVisible(false);
   }
@@ -86,7 +87,7 @@ export function EditModal({
 
         <Modal.Footer>
           <Button onClick={() => setVisible(false)} variant="secondary">Cancelar</Button>
-          <Button type='submit' variant="primary">Criar Voo</Button>
+          <Button type='submit' variant="primary">Editar Agendamento</Button>
         </Modal.Footer>
       </Form>
     </Modal>

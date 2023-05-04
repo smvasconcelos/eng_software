@@ -20,6 +20,7 @@ export function CreateModal({
       return input.value;
     })
 
+    console.log({name, surname, cpf, password, country, passaport,miles});
     if (!name || !surname || !cpf || !password || !country || !passaport || !miles) return toast.warning('Preencha todos os campos para presseguir');
 
     callback({
@@ -29,7 +30,7 @@ export function CreateModal({
       password: password,
       country: country,
       miles: miles,
-      passaport: passaport,
+      passaport: parseInt(passaport),
     })
     setVisible(false);
   }
@@ -57,13 +58,17 @@ export function CreateModal({
             <Form.Label>Password</Form.Label>
             <Form.Control type="password" placeholder="Password" />
           </Form.Group>
+          <Form.Group className="mb-3" controlId="country">
+            <Form.Label>País</Form.Label>
+            <Form.Control type="text" placeholder="Brasil" />
+          </Form.Group>
           <Form.Group className="mb-3" controlId="passaport">
             <Form.Label>Passaport</Form.Label>
-            <Form.Control type="text" placeholder="Password" />
+            <Form.Control type="text" placeholder="07785302555" />
           </Form.Group>
           <Form.Group className="mb-3" controlId="miles">
             <Form.Label>Milhas</Form.Label>
-            <Form.Control type="number" placeholder="1" />
+            <Form.Control type="text" placeholder="1" />
           </Form.Group>
         </Modal.Body>
 

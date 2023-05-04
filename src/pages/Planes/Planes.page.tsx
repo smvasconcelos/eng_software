@@ -80,10 +80,7 @@ export function Planes(): JSX.Element {
                     <tr key={plane.registration}>
                       <td>{plane.registration}</td>
                       <td>
-                        {
-                          new Date(Date.apply(plane.manufacturingDate)).toLocaleDateString() +  " " + new Date(Date.apply(plane.manufacturingDate)).toLocaleTimeString()
-                        }
-                        </td>
+                        {plane.manufacturingDate.replace('.00Z', '').replace("T", " ").replaceAll("-", "/")}</td>
                       <td>{plane.model.description}</td>
                       <td style={{ cursor: 'pointer', display: 'flex', gap: 10 }} >
                         <span onClick={() => deletePlane(plane)}>Deletar</span>
